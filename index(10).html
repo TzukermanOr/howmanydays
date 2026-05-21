@@ -1,0 +1,1384 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>מעקב אחרי ימי מילואים</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;500;600;700;800&family=Frank+Ruhl+Libre:wght@500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f7f4ed;
+    --bg-pattern: #f0ebe0;
+    --card: #ffffff;
+    --primary: #1a2942;
+    --primary-dark: #0f1a2e;
+    --primary-light: #2a3f5f;
+    --accent: #b8975a;
+    --accent-light: #d4b87a;
+    --accent-dark: #8e7240;
+    --text: #1a202c;
+    --text-light: #5a6478;
+    --text-muted: #8a92a3;
+    --border: #e5dfd2;
+    --border-light: #efeae0;
+    --success: #2f7d5e;
+    --danger: #b13a36;
+    --warning: #c87f1e;
+    --gold: #d4af37;
+    --silver: #c0c4cc;
+    --bronze: #cd7f32;
+    --shadow-sm: 0 1px 2px rgba(26,41,66,0.06);
+    --shadow: 0 4px 12px rgba(26,41,66,0.08), 0 2px 4px rgba(26,41,66,0.04);
+    --shadow-lg: 0 12px 32px rgba(26,41,66,0.12), 0 4px 8px rgba(26,41,66,0.06);
+  }
+  
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  
+  html { scroll-behavior: smooth; }
+  
+  body {
+    font-family: 'Assistant', sans-serif;
+    font-size: 22px;
+    background: var(--bg);
+    background-image: 
+      radial-gradient(circle at 1px 1px, var(--bg-pattern) 1px, transparent 0);
+    background-size: 24px 24px;
+    color: var(--text);
+    line-height: 1.55;
+    min-height: 100vh;
+    padding: 28px 24px;
+    font-weight: 400;
+  }
+  
+  .container { max-width: 1500px; margin: 0 auto; }
+  
+  /* Header */
+  header {
+    background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 60%, var(--primary-light) 100%);
+    color: white;
+    padding: 36px 44px;
+    border-radius: 18px;
+    margin-bottom: 28px;
+    box-shadow: var(--shadow-lg);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  header::before {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 240px; height: 240px;
+    background: radial-gradient(circle, var(--accent) 0%, transparent 70%);
+    opacity: 0.15;
+    transform: translate(40%, -40%);
+    pointer-events: none;
+  }
+  
+  .header-content {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  
+  .header-title { display: flex; flex-direction: column; gap: 4px; }
+  
+  h1 {
+    font-family: 'Frank Ruhl Libre', serif;
+    font-size: 42px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    line-height: 1.1;
+  }
+  
+  .header-subtitle {
+    font-size: 20px;
+    color: var(--accent-light);
+    font-weight: 400;
+    letter-spacing: 0.5px;
+  }
+  
+  h2 {
+    font-family: 'Frank Ruhl Libre', serif;
+    font-size: 28px;
+    font-weight: 500;
+    color: var(--primary);
+    letter-spacing: -0.3px;
+  }
+  
+  h3 { font-size: 22px; font-weight: 600; color: var(--primary); }
+  
+  .header-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+  
+  /* Buttons */
+  button {
+    font-family: 'Assistant', sans-serif;
+    font-size: 19px;
+    padding: 11px 22px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.18s ease;
+    white-space: nowrap;
+  }
+  
+  .btn-primary {
+    background: var(--accent);
+    color: var(--primary-dark);
+    box-shadow: 0 2px 6px rgba(184,151,90,0.3);
+  }
+  .btn-primary:hover { background: var(--accent-light); transform: translateY(-1px); box-shadow: 0 4px 10px rgba(184,151,90,0.4); }
+  
+  .btn-secondary {
+    background: rgba(255,255,255,0.12);
+    color: white;
+    border: 1px solid rgba(255,255,255,0.25);
+    backdrop-filter: blur(8px);
+  }
+  .btn-secondary:hover { background: rgba(255,255,255,0.22); border-color: rgba(255,255,255,0.4); }
+  
+  .btn-danger { background: var(--danger); color: white; }
+  .btn-danger:hover { background: #9c2f2c; }
+  .btn-success { background: var(--success); color: white; }
+  .btn-success:hover { background: #266649; }
+  .btn-neutral { background: #e8e3d8; color: var(--text); }
+  .btn-neutral:hover { background: #d8d2c5; }
+  .btn-sm { font-size: 16px; padding: 7px 14px; }
+  
+  /* Stats Grid */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+  
+  .stat-card {
+    background: var(--card);
+    padding: 22px 26px;
+    border-radius: 14px;
+    box-shadow: var(--shadow-sm);
+    border-right: 4px solid var(--accent);
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s;
+  }
+  
+  .stat-card:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+  
+  .stat-label {
+    font-size: 17px;
+    color: var(--text-light);
+    margin-bottom: 6px;
+    font-weight: 500;
+    letter-spacing: 0.2px;
+  }
+  
+  .stat-value {
+    font-family: 'Frank Ruhl Libre', serif;
+    font-size: 38px;
+    font-weight: 700;
+    color: var(--primary);
+    line-height: 1;
+  }
+  
+  .stat-unit {
+    font-family: 'Assistant', sans-serif;
+    font-size: 17px;
+    color: var(--text-muted);
+    font-weight: 400;
+    margin-right: 4px;
+  }
+  
+  /* Panels */
+  .panel {
+    background: var(--card);
+    padding: 28px 32px;
+    border-radius: 16px;
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 24px;
+    border: 1px solid var(--border-light);
+  }
+  
+  .panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 14px;
+    border-bottom: 2px solid var(--border-light);
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  
+  .panel-header h2 { margin: 0; }
+  
+  /* Filters */
+  .filters {
+    display: flex;
+    gap: 16px;
+    align-items: flex-end;
+    flex-wrap: wrap;
+  }
+  
+  .filter-group { display: flex; flex-direction: column; gap: 6px; min-width: 160px; }
+  
+  .filter-group label {
+    font-size: 16px;
+    color: var(--text-light);
+    font-weight: 500;
+    letter-spacing: 0.2px;
+  }
+  
+  select, input[type="text"], input[type="date"], input[type="number"] {
+    font-family: 'Assistant', sans-serif;
+    font-size: 19px;
+    padding: 11px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 9px;
+    background: white;
+    color: var(--text);
+    transition: border-color 0.18s;
+  }
+  
+  select:focus, input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(184,151,90,0.15);
+  }
+  
+  /* Top Performers */
+  .performers-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 14px;
+  }
+  
+  .performer {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 20px;
+    background: linear-gradient(to left, #faf6ec, #fffdf6);
+    border-radius: 12px;
+    border-right: 4px solid var(--accent);
+    transition: all 0.2s;
+  }
+  
+  .performer:hover { transform: translateX(-3px); box-shadow: var(--shadow); }
+  
+  .performer.rank-1 { background: linear-gradient(to left, #fdf4d4, #fffbeb); border-right-color: var(--gold); }
+  .performer.rank-2 { background: linear-gradient(to left, #f0f2f5, #fafbfc); border-right-color: var(--silver); }
+  .performer.rank-3 { background: linear-gradient(to left, #fbe9d8, #fdf6ee); border-right-color: var(--bronze); }
+  
+  .performer-rank {
+    background: var(--accent);
+    color: white;
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 19px;
+    font-family: 'Frank Ruhl Libre', serif;
+    flex-shrink: 0;
+    box-shadow: 0 2px 6px rgba(184,151,90,0.3);
+  }
+  
+  .performer.rank-1 .performer-rank { background: var(--gold); color: var(--primary-dark); }
+  .performer.rank-2 .performer-rank { background: var(--silver); color: var(--primary-dark); }
+  .performer.rank-3 .performer-rank { background: var(--bronze); }
+  
+  .performer-info { flex: 1; min-width: 0; }
+  
+  .performer-name {
+    font-weight: 600;
+    font-size: 21px;
+    color: var(--primary);
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .performer-stats {
+    font-size: 16px;
+    color: var(--text-light);
+    margin-bottom: 6px;
+  }
+  
+  .performer-stats strong { color: var(--primary); font-weight: 600; }
+  
+  .percentage-bar {
+    height: 7px;
+    background: rgba(0,0,0,0.06);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  
+  .percentage-fill {
+    height: 100%;
+    background: linear-gradient(to left, var(--accent), var(--accent-light));
+    transition: width 0.6s cubic-bezier(0.4,0,0.2,1);
+    border-radius: 4px;
+  }
+  
+  .performer.rank-1 .percentage-fill { background: linear-gradient(to left, var(--gold), #f0d870); }
+  .performer.rank-2 .percentage-fill { background: linear-gradient(to left, var(--silver), #d8dce4); }
+  .performer.rank-3 .percentage-fill { background: linear-gradient(to left, var(--bronze), #e09850); }
+  
+  /* Activities */
+  .activity-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    border: 1.5px solid var(--border-light);
+    border-radius: 12px;
+    margin-bottom: 10px;
+    background: #fdfcf8;
+    transition: all 0.18s;
+  }
+  
+  .activity-row:hover {
+    border-color: var(--accent);
+    background: white;
+    box-shadow: var(--shadow-sm);
+  }
+  
+  .activity-info { flex: 1; min-width: 0; }
+  
+  .activity-name {
+    font-weight: 600;
+    font-size: 21px;
+    color: var(--primary);
+    margin-bottom: 4px;
+  }
+  
+  .activity-meta {
+    font-size: 17px;
+    color: var(--text-light);
+    display: flex;
+    gap: 18px;
+    flex-wrap: wrap;
+  }
+  
+  .activity-meta-item { display: inline-flex; align-items: center; gap: 5px; }
+  
+  .activity-actions { display: flex; gap: 8px; flex-shrink: 0; }
+  
+  /* People */
+  .people-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    gap: 16px;
+  }
+  
+  .person-card {
+    background: var(--card);
+    border: 1.5px solid var(--border-light);
+    border-radius: 14px;
+    padding: 20px 22px;
+    transition: all 0.2s;
+  }
+  
+  .person-card:hover {
+    box-shadow: var(--shadow);
+    transform: translateY(-2px);
+    border-color: var(--border);
+  }
+  
+  .person-card.active { border-right: 4px solid var(--accent); }
+  .person-card.top-3 { border-right: 4px solid var(--gold); background: linear-gradient(to left, #fffdf5, white); }
+  
+  .person-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 14px;
+    padding-bottom: 12px;
+    border-bottom: 1.5px solid var(--border-light);
+    gap: 12px;
+  }
+  
+  .person-name {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--primary);
+    line-height: 1.2;
+  }
+  
+  .person-id {
+    font-size: 16px;
+    color: var(--text-muted);
+    margin-top: 3px;
+    font-feature-settings: "tnum";
+  }
+  
+  .person-days {
+    background: var(--primary);
+    color: white;
+    padding: 5px 14px;
+    border-radius: 22px;
+    font-size: 18px;
+    font-weight: 600;
+    white-space: nowrap;
+    box-shadow: 0 2px 6px rgba(26,41,66,0.2);
+  }
+  
+  .person-days.zero { background: #c8c4ba; color: var(--primary-dark); }
+  .person-days.high { background: var(--accent); color: var(--primary-dark); }
+  
+  .activities-list { margin-top: 8px; }
+  
+  .activity-tag {
+    display: inline-block;
+    background: #eef2f8;
+    color: var(--primary);
+    padding: 5px 12px;
+    border-radius: 8px;
+    margin: 4px 0 4px 4px;
+    font-size: 17px;
+    border: 1px solid #dde4ed;
+    transition: all 0.15s;
+  }
+  
+  .activity-tag:hover { background: #e3eaf3; }
+  
+  /* Modal */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15,26,46,0.55);
+    backdrop-filter: blur(4px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+  }
+  
+  .modal-overlay.active {
+    display: flex;
+    animation: fadeIn 0.18s ease;
+  }
+  
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  
+  .modal {
+    background: white;
+    border-radius: 18px;
+    padding: 32px 36px;
+    max-width: 720px;
+    width: 100%;
+    max-height: 92vh;
+    overflow-y: auto;
+    box-shadow: var(--shadow-lg);
+    animation: slideUp 0.22s cubic-bezier(0.4,0,0.2,1);
+  }
+  
+  @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  
+  .modal h2 { margin-bottom: 22px; padding-bottom: 14px; border-bottom: 2px solid var(--border-light); }
+  
+  .form-group { margin-bottom: 18px; }
+  
+  .form-group label {
+    display: block;
+    margin-bottom: 7px;
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--text);
+  }
+  
+  .form-group input, .form-group select { width: 100%; }
+  
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  
+  .people-picker {
+    max-height: 320px;
+    overflow-y: auto;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 6px;
+    background: #fafaf6;
+  }
+  
+  .people-picker::-webkit-scrollbar { width: 8px; }
+  .people-picker::-webkit-scrollbar-track { background: transparent; }
+  .people-picker::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+  
+  .person-checkbox {
+    display: flex;
+    align-items: center;
+    padding: 9px 12px;
+    gap: 12px;
+    cursor: pointer;
+    border-radius: 7px;
+    font-size: 19px;
+    transition: background 0.12s;
+  }
+  
+  .person-checkbox:hover { background: white; }
+  .person-checkbox input { width: 20px; height: 20px; cursor: pointer; accent-color: var(--accent); }
+  .person-checkbox .id-label { color: var(--text-muted); font-size: 16px; font-feature-settings: "tnum"; }
+  
+  .picker-toolbar { display: flex; gap: 8px; margin-bottom: 8px; align-items: center; flex-wrap: wrap; }
+  .picker-count { margin-right: auto; font-size: 17px; color: var(--text-light); }
+  
+  .modal-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-top: 28px;
+    padding-top: 18px;
+    border-top: 2px solid var(--border-light);
+  }
+  
+  /* Empty State */
+  .empty-state {
+    text-align: center;
+    padding: 50px 20px;
+    color: var(--text-light);
+    font-size: 19px;
+  }
+  
+  .empty-state-icon { font-size: 48px; margin-bottom: 12px; opacity: 0.5; }
+  
+  /* Search */
+  .search-wrapper { position: relative; flex: 1; min-width: 240px; }
+  
+  /* Person Manager */
+  .person-manager-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border-light);
+    gap: 12px;
+  }
+  
+  .person-manager-row:last-child { border-bottom: none; }
+  .person-manager-row:hover { background: #faf8f2; }
+  
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 12px; height: 12px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 6px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+  
+  /* Responsive */
+  @media (max-width: 768px) {
+    body { padding: 16px 12px; font-size: 20px; }
+    header { padding: 24px 24px; }
+    h1 { font-size: 32px; }
+    .panel { padding: 20px 18px; }
+    .form-row { grid-template-columns: 1fr; }
+    .activity-row { flex-direction: column; align-items: stretch; }
+    .activity-actions { justify-content: flex-end; }
+  }
+  
+  @media print {
+    body { background: white; padding: 0; }
+    .header-actions, .panel-header button, .activity-actions, .modal-overlay { display: none !important; }
+    .panel { box-shadow: none; border: 1px solid #ccc; page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <!-- HEADER -->
+    <header>
+      <div class="header-content">
+        <div class="header-title">
+          <h1>מעקב אחרי ימי מילואים</h1>
+          <div class="header-subtitle">ניהול זימונים, ימי שירות וסיכומים</div>
+        </div>
+        <div class="header-actions">
+          <button class="btn-primary" onclick="openActivityModal()">+ הוסף פעילות</button>
+          <button class="btn-secondary" onclick="openPeopleModal()">ניהול אנשים</button>
+          <button class="btn-secondary" onclick="exportData()">ייצוא</button>
+          <button class="btn-secondary" onclick="document.getElementById('importFile').click()">ייבוא</button>
+          <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)">
+        </div>
+      </div>
+    </header>
+    
+    <!-- STATS -->
+    <div class="stats-grid" id="statsGrid"></div>
+    
+    <!-- FILTERS -->
+    <div class="panel">
+      <div class="panel-header">
+        <h2>סינון וחיפוש</h2>
+        <div id="filterSummary" style="font-size:18px; color:var(--text-light);"></div>
+      </div>
+      <div class="filters">
+        <div class="filter-group">
+          <label>תקופת חישוב</label>
+          <select id="filterPeriod" onchange="renderAll()">
+            <option value="all">סה"כ (כל הזמנים)</option>
+            <option value="year">לפי שנה</option>
+            <option value="month">לפי חודש</option>
+            <option value="activity">לפי פעילות</option>
+          </select>
+        </div>
+        <div class="filter-group" id="yearFilterWrap" style="display:none">
+          <label>שנה</label>
+          <select id="filterYear" onchange="renderAll()"></select>
+        </div>
+        <div class="filter-group" id="monthFilterWrap" style="display:none">
+          <label>חודש</label>
+          <select id="filterMonth" onchange="renderAll()"></select>
+        </div>
+        <div class="filter-group" id="activityFilterWrap" style="display:none; min-width: 260px;">
+          <label>פעילות</label>
+          <select id="filterActivity" onchange="renderAll()"></select>
+        </div>
+        <div class="search-wrapper">
+          <label style="font-size:16px; color:var(--text-light); display:block; margin-bottom:6px;">חיפוש איש</label>
+          <input type="text" id="searchInput" placeholder="שם או מספר אישי..." oninput="renderPeople()">
+        </div>
+      </div>
+    </div>
+    
+    <!-- TOP PERFORMERS -->
+    <div class="panel">
+      <div class="panel-header">
+        <h2>🏆 בולטים בתקופה</h2>
+        <div style="font-size:17px; color:var(--text-light);">10 הראשונים לפי סך ימים</div>
+      </div>
+      <div class="performers-grid" id="topPerformers"></div>
+    </div>
+    
+    <!-- ACTIVITIES -->
+    <div class="panel">
+      <div class="panel-header">
+        <h2>📋 פעילויות (<span id="activitiesCount">0</span>)</h2>
+        <button class="btn-primary" onclick="openActivityModal()">+ פעילות חדשה</button>
+      </div>
+      <div id="activitiesList"></div>
+    </div>
+    
+    <!-- PEOPLE -->
+    <div class="panel">
+      <div class="panel-header">
+        <h2>👥 רשימת אנשים (<span id="peopleCount">0</span>)</h2>
+        <div style="display:flex; gap:10px; align-items:center;">
+          <label style="font-size:17px; color:var(--text-light);">מיון:</label>
+          <select id="peopleSort" onchange="renderPeople()">
+            <option value="days-desc">ימים (גבוה לנמוך)</option>
+            <option value="days-asc">ימים (נמוך לגבוה)</option>
+            <option value="name">שם א-ת</option>
+            <option value="id">מ.א.</option>
+          </select>
+        </div>
+      </div>
+      <div class="people-list" id="peopleList"></div>
+    </div>
+    
+    <footer style="text-align:center; padding: 24px; color: var(--text-muted); font-size: 16px;">
+      הנתונים נשמרים מקומית בדפדפן · מומלץ לעשות ייצוא לגיבוי
+    </footer>
+  </div>
+  
+  <!-- ACTIVITY MODAL -->
+  <div class="modal-overlay" id="activityModal">
+    <div class="modal">
+      <h2 id="activityModalTitle">הוסף פעילות חדשה</h2>
+      <div class="form-group">
+        <label>שם הפעילות</label>
+        <input type="text" id="activityName" placeholder="למשל: צו 8 - אוקטובר 2024">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>מתאריך</label>
+          <input type="date" id="activityStart">
+        </div>
+        <div class="form-group">
+          <label>עד תאריך</label>
+          <input type="date" id="activityEnd">
+        </div>
+      </div>
+      <div id="dayCountPreview" style="font-size:18px; color:var(--text-light); margin-bottom: 18px;"></div>
+      <div class="form-group">
+        <label>משתתפים</label>
+        <input type="text" placeholder="חפש איש בתוך הרשימה..." oninput="filterPeoplePicker(this.value)" style="margin-bottom:10px;">
+        <div class="picker-toolbar">
+          <button type="button" class="btn-neutral btn-sm" onclick="toggleAllPickerPeople(true)">בחר הכל</button>
+          <button type="button" class="btn-neutral btn-sm" onclick="toggleAllPickerPeople(false)">נקה</button>
+          <span class="picker-count" id="pickerCount">0 נבחרו</span>
+        </div>
+        <div class="people-picker" id="peoplePicker"></div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-neutral" onclick="closeActivityModal()">ביטול</button>
+        <button class="btn-success" onclick="saveActivity()">שמור פעילות</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- PEOPLE MANAGEMENT MODAL -->
+  <div class="modal-overlay" id="peopleModal">
+    <div class="modal">
+      <h2>ניהול אנשים</h2>
+      <div class="form-group">
+        <label>הוסף איש חדש</label>
+        <div style="display:grid; grid-template-columns: 2fr 1fr auto; gap: 10px;">
+          <input type="text" id="newPersonName" placeholder="שם מלא">
+          <input type="text" id="newPersonId" placeholder="מ.א.">
+          <button class="btn-success" onclick="addPerson()">הוסף</button>
+        </div>
+      </div>
+      <div style="max-height: 420px; overflow-y: auto; border: 1.5px solid var(--border-light); border-radius: 10px; margin-top: 18px;" id="peopleManagerList"></div>
+      <div class="modal-actions">
+        <button class="btn-neutral" onclick="closePeopleModal()">סגור</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+// ===== Initial Data: 53 unique people (deduplicated by military ID) =====
+const INITIAL_PEOPLE = [
+  { id: "5155846", name: "שי יגור" },
+  { id: "5195353", name: "ברנץ׳ שי שלום" },
+  { id: "5209716", name: "גבריאל יריב" },
+  { id: "5209914", name: "חן ויסברג" },
+  { id: "5210342", name: "סמי אדרי פורת" },
+  { id: "5221908", name: "תומר גרין" },
+  { id: "5281236", name: "שניר מרדכי" },
+  { id: "5340624", name: "עמית סאסי" },
+  { id: "5382258", name: "סמיון קריסטלני" },
+  { id: "5644425", name: "שלמה רואש" },
+  { id: "5743647", name: "ניב גויטע" },
+  { id: "5761464", name: "אורגד כוהן" },
+  { id: "5765041", name: "רביד זפרני" },
+  { id: "5912473", name: "אור אשד" },
+  { id: "6042827", name: "גיא כהן" },
+  { id: "6064655", name: "סרגיי טונייב" },
+  { id: "6145984", name: "ולדימיר פופוב" },
+  { id: "6864620", name: "ציון אברהם" },
+  { id: "7067548", name: "יגאל ברקין" },
+  { id: "7133969", name: "זוהר אלג׳ם" },
+  { id: "7136920", name: "עוז דגמי" },
+  { id: "7182150", name: "רן כספי" },
+  { id: "7240540", name: "אביחי ברנס" },
+  { id: "7274960", name: "יהונתן בק" },
+  { id: "7287080", name: "אלעד רפד" },
+  { id: "7499484", name: "דוד דודוביץ" },
+  { id: "7534381", name: "שחר פרקש" },
+  { id: "7577447", name: "לידור בנימיני" },
+  { id: "7583549", name: "דניאל דבלה" },
+  { id: "7604879", name: "יובל כץ" },
+  { id: "8002580", name: "דניל ליסר" },
+  { id: "8134206", name: "שגב אשל" },
+  { id: "8141310", name: "טל מלכי" },
+  { id: "8251202", name: "אור צוקרמן" },
+  { id: "8298648", name: "יעלה זעיר" },
+  { id: "8340950", name: "אביב דור" },
+  { id: "8346438", name: "יואב זילבר" },
+  { id: "8359957", name: "עומר מיכאלי" },
+  { id: "8374646", name: "ליאור א בר" },
+  { id: "8379425", name: "דוד דסא מטקו" },
+  { id: "8387577", name: "דניאל בריילובסקי" },
+  { id: "8427566", name: "עידן גינדי" },
+  { id: "8447447", name: "גירמאו באיימות" },
+  { id: "8582158", name: "דניאל שביט" },
+  { id: "8599933", name: "ישראל עטיה" },
+  { id: "8620366", name: "אופיר חוץ" },
+  { id: "8657140", name: "נצר מנסור" },
+  { id: "8665264", name: "רום בילט" },
+  { id: "8678166", name: "יהב לוי" },
+  { id: "8700342", name: "רועי פקאר" },
+  { id: "8707253", name: "עומר טויטו [חיצוני]" },
+  { id: "8767973", name: "איליי אלול [חיצוני]" },
+  { id: "8851312", name: "יאיר תבורי" }
+];
+
+const MONTH_NAMES = ['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
+const STORAGE_KEY = 'miluim_tracker_v1';
+
+// ===== State =====
+let state = { people: [], activities: [] };
+let editingActivityId = null;
+let pickerSelection = new Set();
+
+// ===== Persistence =====
+function loadState() {
+  const raw = localStorage.getItem(STORAGE_KEY);
+  if (raw) {
+    try {
+      state = JSON.parse(raw);
+      // Ensure all initial people exist (in case the user removed and we add new ones in updates)
+      const existingIds = new Set(state.people.map(p => p.id));
+      INITIAL_PEOPLE.forEach(p => { if (!existingIds.has(p.id)) state.people.push(p); });
+    } catch(e) {
+      console.error('Failed to load state:', e);
+      state = { people: [...INITIAL_PEOPLE], activities: [] };
+    }
+  } else {
+    state = { people: [...INITIAL_PEOPLE], activities: [] };
+  }
+  saveState();
+}
+
+function saveState() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  } catch(e) {
+    alert('שגיאה בשמירת הנתונים: ' + e.message);
+  }
+}
+
+// ===== Helpers =====
+function daysBetween(startStr, endStr) {
+  const s = new Date(startStr + 'T00:00:00');
+  const e = new Date(endStr + 'T00:00:00');
+  const diff = Math.round((e - s) / 86400000) + 1; // inclusive both ends
+  return Math.max(diff, 0);
+}
+
+function formatDate(d) {
+  return new Date(d + 'T00:00:00').toLocaleDateString('he-IL');
+}
+
+function uuid() {
+  return Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
+}
+
+function overlapDays(activity, periodStart, periodEnd) {
+  const s = new Date(activity.startDate + 'T00:00:00');
+  const e = new Date(activity.endDate + 'T00:00:00');
+  const ps = new Date(periodStart + 'T00:00:00');
+  const pe = new Date(periodEnd + 'T00:00:00');
+  const overlapStart = s > ps ? s : ps;
+  const overlapEnd = e < pe ? e : pe;
+  if (overlapStart > overlapEnd) return 0;
+  return Math.round((overlapEnd - overlapStart) / 86400000) + 1;
+}
+
+// ===== Filter Logic =====
+function getCurrentFilter() {
+  const period = document.getElementById('filterPeriod').value;
+  return {
+    period,
+    year: parseInt(document.getElementById('filterYear').value) || new Date().getFullYear(),
+    month: parseInt(document.getElementById('filterMonth').value) || 0,
+    activityId: document.getElementById('filterActivity').value
+  };
+}
+
+function getFilteredActivities() {
+  const f = getCurrentFilter();
+  
+  if (f.period === 'all') return state.activities;
+  
+  if (f.period === 'year') {
+    const ys = `${f.year}-01-01`, ye = `${f.year}-12-31`;
+    return state.activities.filter(a => overlapDays(a, ys, ye) > 0);
+  }
+  
+  if (f.period === 'month') {
+    const ms = new Date(f.year, f.month, 1);
+    const me = new Date(f.year, f.month + 1, 0);
+    const msStr = ms.toISOString().slice(0, 10);
+    const meStr = me.toISOString().slice(0, 10);
+    return state.activities.filter(a => overlapDays(a, msStr, meStr) > 0);
+  }
+  
+  if (f.period === 'activity') {
+    return state.activities.filter(a => a.id === f.activityId);
+  }
+  
+  return state.activities;
+}
+
+function getDaysForActivityInFilter(activity) {
+  const f = getCurrentFilter();
+  
+  if (f.period === 'all' || f.period === 'activity') {
+    return daysBetween(activity.startDate, activity.endDate);
+  }
+  
+  if (f.period === 'year') {
+    return overlapDays(activity, `${f.year}-01-01`, `${f.year}-12-31`);
+  }
+  
+  if (f.period === 'month') {
+    const ms = new Date(f.year, f.month, 1);
+    const me = new Date(f.year, f.month + 1, 0);
+    return overlapDays(activity, ms.toISOString().slice(0,10), me.toISOString().slice(0,10));
+  }
+  
+  return daysBetween(activity.startDate, activity.endDate);
+}
+
+function getPersonStats(personId) {
+  const filtered = getFilteredActivities().filter(a => a.participants.includes(personId));
+  const totalDays = filtered.reduce((sum, a) => sum + getDaysForActivityInFilter(a), 0);
+  return { totalDays, activities: filtered };
+}
+
+// ===== Filter UI =====
+function updateFilterUI() {
+  const f = getCurrentFilter();
+  document.getElementById('yearFilterWrap').style.display = (f.period === 'year' || f.period === 'month') ? '' : 'none';
+  document.getElementById('monthFilterWrap').style.display = f.period === 'month' ? '' : 'none';
+  document.getElementById('activityFilterWrap').style.display = f.period === 'activity' ? '' : 'none';
+  
+  // Populate years
+  const yearSel = document.getElementById('filterYear');
+  const years = new Set();
+  state.activities.forEach(a => {
+    const sy = new Date(a.startDate).getFullYear();
+    const ey = new Date(a.endDate).getFullYear();
+    for (let y = sy; y <= ey; y++) years.add(y);
+  });
+  years.add(new Date().getFullYear());
+  const sortedYears = [...years].sort((a, b) => b - a);
+  const currentYear = yearSel.value;
+  yearSel.innerHTML = sortedYears.map(y => `<option value="${y}">${y}</option>`).join('');
+  if (currentYear && sortedYears.map(String).includes(currentYear)) yearSel.value = currentYear;
+  
+  // Populate months
+  const monthSel = document.getElementById('filterMonth');
+  const currentMonth = monthSel.value;
+  monthSel.innerHTML = MONTH_NAMES.map((m, i) => `<option value="${i}">${m}</option>`).join('');
+  if (currentMonth !== '') monthSel.value = currentMonth;
+  
+  // Populate activities
+  const actSel = document.getElementById('filterActivity');
+  const currentAct = actSel.value;
+  const sortedActs = [...state.activities].sort((a, b) => new Date(b.startDate) - new Date(a.startDate));
+  actSel.innerHTML = sortedActs.length === 0
+    ? '<option value="">אין פעילויות</option>'
+    : sortedActs.map(a => `<option value="${a.id}">${escapeHtml(a.name)} (${formatDate(a.startDate)})</option>`).join('');
+  if (currentAct && sortedActs.find(a => a.id === currentAct)) actSel.value = currentAct;
+  
+  // Update summary text
+  let summary = '';
+  if (f.period === 'all') summary = 'מציג: כל הזמנים';
+  else if (f.period === 'year') summary = `מציג: שנת ${f.year}`;
+  else if (f.period === 'month') summary = `מציג: ${MONTH_NAMES[f.month]} ${f.year}`;
+  else if (f.period === 'activity') {
+    const a = state.activities.find(x => x.id === f.activityId);
+    summary = a ? `מציג: ${a.name}` : 'בחר פעילות';
+  }
+  document.getElementById('filterSummary').textContent = summary;
+}
+
+// ===== Rendering =====
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function renderStats() {
+  const activities = getFilteredActivities();
+  let totalManDays = 0;
+  
+  activities.forEach(a => {
+    const days = getDaysForActivityInFilter(a);
+    totalManDays += days * a.participants.length;
+  });
+  
+  const activePeople = new Set();
+  activities.forEach(a => a.participants.forEach(p => activePeople.add(p)));
+  
+  const avgDays = activePeople.size > 0 ? (totalManDays / activePeople.size).toFixed(1) : 0;
+  
+  document.getElementById('statsGrid').innerHTML = `
+    <div class="stat-card">
+      <div class="stat-label">סך אנשים ברשימה</div>
+      <div class="stat-value">${state.people.length}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">פעילויות בתקופה</div>
+      <div class="stat-value">${activities.length}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">סך ימי-אדם</div>
+      <div class="stat-value">${totalManDays}<span class="stat-unit">ימים</span></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">אנשים פעילים</div>
+      <div class="stat-value">${activePeople.size}<span class="stat-unit">מתוך ${state.people.length}</span></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">ממוצע ימים לאיש פעיל</div>
+      <div class="stat-value">${avgDays}<span class="stat-unit">ימים</span></div>
+    </div>
+  `;
+}
+
+function renderTopPerformers() {
+  const stats = state.people.map(p => ({
+    ...p,
+    days: getPersonStats(p.id).totalDays
+  })).filter(p => p.days > 0).sort((a, b) => b.days - a.days);
+  
+  const container = document.getElementById('topPerformers');
+  
+  if (stats.length === 0) {
+    container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📊</div>אין עדיין נתונים בתקופה הנבחרת. הוסף פעילויות כדי לראות את הבולטים.</div>';
+    return;
+  }
+  
+  const totalDays = stats.reduce((s, p) => s + p.days, 0);
+  const maxDays = stats[0].days;
+  const top = stats.slice(0, 10);
+  
+  container.innerHTML = top.map((p, i) => {
+    const pct = ((p.days / totalDays) * 100).toFixed(1);
+    const barPct = (p.days / maxDays) * 100;
+    const rankClass = i < 3 ? `rank-${i + 1}` : '';
+    return `
+      <div class="performer ${rankClass}">
+        <div class="performer-rank">${i + 1}</div>
+        <div class="performer-info">
+          <div class="performer-name">${escapeHtml(p.name)}</div>
+          <div class="performer-stats"><strong>${p.days}</strong> ימים · <strong>${pct}%</strong> מהסך · ${getPersonStats(p.id).activities.length} זימונים</div>
+          <div class="percentage-bar"><div class="percentage-fill" style="width:${barPct}%"></div></div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderActivities() {
+  const container = document.getElementById('activitiesList');
+  document.getElementById('activitiesCount').textContent = state.activities.length;
+  
+  if (state.activities.length === 0) {
+    container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📋</div>אין פעילויות עדיין.<br>לחץ על "הוסף פעילות" כדי להתחיל.</div>';
+    return;
+  }
+  
+  const sorted = [...state.activities].sort((a, b) => new Date(b.startDate) - new Date(a.startDate));
+  
+  container.innerHTML = sorted.map(a => {
+    const days = daysBetween(a.startDate, a.endDate);
+    return `
+      <div class="activity-row">
+        <div class="activity-info">
+          <div class="activity-name">${escapeHtml(a.name)}</div>
+          <div class="activity-meta">
+            <span class="activity-meta-item">📅 ${formatDate(a.startDate)} - ${formatDate(a.endDate)}</span>
+            <span class="activity-meta-item">⏱️ ${days} ימים</span>
+            <span class="activity-meta-item">👥 ${a.participants.length} משתתפים</span>
+          </div>
+        </div>
+        <div class="activity-actions">
+          <button class="btn-neutral btn-sm" onclick="editActivity('${a.id}')">ערוך</button>
+          <button class="btn-danger btn-sm" onclick="deleteActivity('${a.id}')">מחק</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderPeople() {
+  const search = document.getElementById('searchInput').value.trim().toLowerCase();
+  const sortBy = document.getElementById('peopleSort').value;
+  const container = document.getElementById('peopleList');
+  
+  document.getElementById('peopleCount').textContent = state.people.length;
+  
+  const peopleWithStats = state.people.map(p => ({ ...p, stats: getPersonStats(p.id) }));
+  
+  // Determine top 3 for highlighting (only those with > 0 days)
+  const sortedByDays = [...peopleWithStats].filter(p => p.stats.totalDays > 0).sort((a, b) => b.stats.totalDays - a.stats.totalDays);
+  const topIds = new Set(sortedByDays.slice(0, 3).map(p => p.id));
+  
+  let filtered = peopleWithStats.filter(p => 
+    !search || p.name.toLowerCase().includes(search) || p.id.includes(search)
+  );
+  
+  // Sort
+  if (sortBy === 'days-desc') filtered.sort((a, b) => b.stats.totalDays - a.stats.totalDays || a.name.localeCompare(b.name, 'he'));
+  else if (sortBy === 'days-asc') filtered.sort((a, b) => a.stats.totalDays - b.stats.totalDays || a.name.localeCompare(b.name, 'he'));
+  else if (sortBy === 'name') filtered.sort((a, b) => a.name.localeCompare(b.name, 'he'));
+  else if (sortBy === 'id') filtered.sort((a, b) => a.id.localeCompare(b.id));
+  
+  if (filtered.length === 0) {
+    container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🔍</div>אין אנשים תואמים לחיפוש.</div>';
+    return;
+  }
+  
+  container.innerHTML = filtered.map(p => {
+    const isTop3 = topIds.has(p.id);
+    const cardClass = isTop3 ? 'top-3' : (p.stats.totalDays > 0 ? 'active' : '');
+    const daysClass = p.stats.totalDays === 0 ? 'zero' : (isTop3 ? 'high' : '');
+    
+    const activitiesHTML = p.stats.activities.length === 0
+      ? '<div style="color:var(--text-muted); font-size:18px; font-style:italic;">אין זימונים בתקופה הנבחרת</div>'
+      : p.stats.activities.map(a => {
+          const d = getDaysForActivityInFilter(a);
+          return `<span class="activity-tag" title="${formatDate(a.startDate)} - ${formatDate(a.endDate)}">${escapeHtml(a.name)} · <strong>${d}</strong> ימים</span>`;
+        }).join('');
+    
+    return `
+      <div class="person-card ${cardClass}">
+        <div class="person-header">
+          <div style="min-width:0; flex:1;">
+            <div class="person-name">${escapeHtml(p.name)}</div>
+            <div class="person-id">מ.א. ${p.id}</div>
+          </div>
+          <div class="person-days ${daysClass}">${p.stats.totalDays} ימים</div>
+        </div>
+        <div class="activities-list">${activitiesHTML}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderAll() {
+  updateFilterUI();
+  renderStats();
+  renderTopPerformers();
+  renderActivities();
+  renderPeople();
+}
+
+// ===== Activity Modal =====
+function openActivityModal(id) {
+  editingActivityId = id || null;
+  document.getElementById('activityModalTitle').textContent = id ? 'ערוך פעילות' : 'הוסף פעילות חדשה';
+  
+  if (id) {
+    const a = state.activities.find(x => x.id === id);
+    document.getElementById('activityName').value = a.name;
+    document.getElementById('activityStart').value = a.startDate;
+    document.getElementById('activityEnd').value = a.endDate;
+    pickerSelection = new Set(a.participants);
+  } else {
+    document.getElementById('activityName').value = '';
+    document.getElementById('activityStart').value = '';
+    document.getElementById('activityEnd').value = '';
+    pickerSelection = new Set();
+  }
+  
+  renderPicker();
+  updateDayPreview();
+  document.getElementById('activityModal').classList.add('active');
+  
+  // Listen for date changes
+  document.getElementById('activityStart').oninput = updateDayPreview;
+  document.getElementById('activityEnd').oninput = updateDayPreview;
+}
+
+function updateDayPreview() {
+  const s = document.getElementById('activityStart').value;
+  const e = document.getElementById('activityEnd').value;
+  const preview = document.getElementById('dayCountPreview');
+  if (s && e) {
+    const d = daysBetween(s, e);
+    if (d > 0) preview.innerHTML = `📊 משך הפעילות: <strong style="color:var(--primary);">${d} ימים</strong>`;
+    else preview.innerHTML = '<span style="color:var(--danger);">⚠ תאריך סיום חייב להיות אחרי תאריך התחלה</span>';
+  } else preview.textContent = '';
+}
+
+function closeActivityModal() {
+  document.getElementById('activityModal').classList.remove('active');
+  editingActivityId = null;
+}
+
+function renderPicker(searchTerm = '') {
+  const container = document.getElementById('peoplePicker');
+  const filtered = state.people
+    .filter(p => !searchTerm || p.name.toLowerCase().includes(searchTerm.toLowerCase()) || p.id.includes(searchTerm))
+    .sort((a, b) => a.name.localeCompare(b.name, 'he'));
+  
+  container.innerHTML = filtered.map(p => `
+    <label class="person-checkbox">
+      <input type="checkbox" data-id="${p.id}" ${pickerSelection.has(p.id) ? 'checked' : ''} onchange="togglePickerPerson('${p.id}', this.checked)">
+      <span>${escapeHtml(p.name)} <span class="id-label">· ${p.id}</span></span>
+    </label>
+  `).join('');
+  
+  updatePickerCount();
+}
+
+function updatePickerCount() {
+  document.getElementById('pickerCount').textContent = `${pickerSelection.size} נבחרו`;
+}
+
+function filterPeoplePicker(term) {
+  renderPicker(term);
+}
+
+function togglePickerPerson(id, checked) {
+  if (checked) pickerSelection.add(id);
+  else pickerSelection.delete(id);
+  updatePickerCount();
+}
+
+function toggleAllPickerPeople(select) {
+  document.querySelectorAll('#peoplePicker input[type="checkbox"]').forEach(cb => {
+    const id = cb.dataset.id;
+    if (select) pickerSelection.add(id);
+    else pickerSelection.delete(id);
+    cb.checked = select;
+  });
+  updatePickerCount();
+}
+
+function saveActivity() {
+  const name = document.getElementById('activityName').value.trim();
+  const startDate = document.getElementById('activityStart').value;
+  const endDate = document.getElementById('activityEnd').value;
+  
+  if (!name) { alert('יש להזין שם פעילות'); return; }
+  if (!startDate || !endDate) { alert('יש להזין תאריך התחלה ותאריך סיום'); return; }
+  if (new Date(endDate) < new Date(startDate)) { alert('תאריך סיום חייב להיות אחרי תאריך התחלה'); return; }
+  if (pickerSelection.size === 0) {
+    if (!confirm('לא נבחרו משתתפים. לשמור בכל זאת?')) return;
+  }
+  
+  if (editingActivityId) {
+    const a = state.activities.find(x => x.id === editingActivityId);
+    a.name = name;
+    a.startDate = startDate;
+    a.endDate = endDate;
+    a.participants = [...pickerSelection];
+  } else {
+    state.activities.push({
+      id: uuid(),
+      name, startDate, endDate,
+      participants: [...pickerSelection]
+    });
+  }
+  
+  saveState();
+  closeActivityModal();
+  renderAll();
+}
+
+function editActivity(id) { openActivityModal(id); }
+
+function deleteActivity(id) {
+  const a = state.activities.find(x => x.id === id);
+  if (!a) return;
+  if (!confirm(`למחוק את הפעילות "${a.name}"?`)) return;
+  state.activities = state.activities.filter(x => x.id !== id);
+  saveState();
+  renderAll();
+}
+
+// ===== People Manager Modal =====
+function openPeopleModal() {
+  renderPeopleManager();
+  document.getElementById('peopleModal').classList.add('active');
+}
+
+function closePeopleModal() {
+  document.getElementById('peopleModal').classList.remove('active');
+}
+
+function renderPeopleManager() {
+  const sorted = [...state.people].sort((a, b) => a.name.localeCompare(b.name, 'he'));
+  document.getElementById('peopleManagerList').innerHTML = sorted.map(p => {
+    const inActivities = state.activities.filter(a => a.participants.includes(p.id)).length;
+    return `
+      <div class="person-manager-row">
+        <div>
+          <strong style="font-size:20px;">${escapeHtml(p.name)}</strong>
+          <span style="color:var(--text-muted); font-size:17px;"> · ${p.id}</span>
+          ${inActivities > 0 ? `<span style="color:var(--text-light); font-size:16px;"> · ${inActivities} פעילויות</span>` : ''}
+        </div>
+        <button class="btn-danger btn-sm" onclick="removePerson('${p.id}')">הסר</button>
+      </div>
+    `;
+  }).join('');
+}
+
+function addPerson() {
+  const name = document.getElementById('newPersonName').value.trim();
+  const id = document.getElementById('newPersonId').value.trim();
+  if (!name || !id) { alert('יש להזין שם ומספר אישי'); return; }
+  if (state.people.find(p => p.id === id)) { alert('מספר אישי זה כבר קיים ברשימה'); return; }
+  state.people.push({ id, name });
+  saveState();
+  document.getElementById('newPersonName').value = '';
+  document.getElementById('newPersonId').value = '';
+  renderPeopleManager();
+  renderAll();
+}
+
+function removePerson(id) {
+  const p = state.people.find(x => x.id === id);
+  if (!p) return;
+  const inActivities = state.activities.filter(a => a.participants.includes(id)).length;
+  const msg = inActivities > 0
+    ? `להסיר את ${p.name}? הוא רשום ב-${inActivities} פעילויות ויוסר גם מהן.`
+    : `להסיר את ${p.name}?`;
+  if (!confirm(msg)) return;
+  state.people = state.people.filter(x => x.id !== id);
+  state.activities.forEach(a => { a.participants = a.participants.filter(x => x !== id); });
+  saveState();
+  renderPeopleManager();
+  renderAll();
+}
+
+// ===== Export/Import =====
+function exportData() {
+  const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `miluim_backup_${new Date().toISOString().slice(0, 10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function importData(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const imported = JSON.parse(e.target.result);
+      if (!Array.isArray(imported.people) || !Array.isArray(imported.activities)) throw new Error('פורמט קובץ לא תקין');
+      if (!confirm(`לייבא ${imported.people.length} אנשים ו-${imported.activities.length} פעילויות? הנתונים הקיימים יוחלפו.`)) return;
+      state = imported;
+      saveState();
+      renderAll();
+      alert('הנתונים יובאו בהצלחה');
+    } catch(err) {
+      alert('שגיאה בייבוא: ' + err.message);
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
+}
+
+// Close modals on overlay click
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', e => {
+    if (e.target === overlay) {
+      overlay.classList.remove('active');
+      editingActivityId = null;
+    }
+  });
+});
+
+// Keyboard shortcuts
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    document.querySelectorAll('.modal-overlay.active').forEach(o => o.classList.remove('active'));
+    editingActivityId = null;
+  }
+});
+
+// ===== Init =====
+loadState();
+renderAll();
+</script>
+</body>
+</html>
