@@ -604,8 +604,10 @@
         <div class="header-actions">
           <button class="btn-primary" onclick="openActivityModal()">+ הוסף פעילות</button>
           <button class="btn-secondary" onclick="openPeopleModal()">ניהול אנשים</button>
-          <button class="btn-secondary" onclick="exportData()">ייצוא</button>
-          <button class="btn-secondary" onclick="document.getElementById('importFile').click()">ייבוא</button>
+          <button class="btn-secondary" onclick="exportToExcel()" title="ייצוא טבלה ל-Excel (4 גיליונות)">📊 טבלת Excel</button>
+          <button class="btn-secondary" onclick="exportToReport()" title="דוח מודפס - ניתן לשמור כ-PDF">📄 דוח / PDF</button>
+          <button class="btn-secondary" onclick="exportJSON()" title="גיבוי מלא של כל הנתונים">💾 גיבוי</button>
+          <button class="btn-secondary" onclick="document.getElementById('importFile').click()" title="שחזור מקובץ גיבוי">📥 ייבוא</button>
           <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)">
         </div>
       </div>
@@ -1326,8 +1328,21 @@ function removePerson(id) {
   renderAll();
 }
 
-// ===== Export/Import =====
-function exportData() {
+// ===== Export Helpers =====
+function getPeriodLabel() {
+  const f = getCurrentFilter();
+  if (f.period === 'all') return 'כל הזמנים';
+  if (f.period === 'year') return `שנת ${f.year}`;
+  if (f.period === 'month') return `${MONTH_NAMES[f.month]} ${f.year}`;
+  if (f.period === 'activity') {
+    const a = state.activities.find(x => x.id === f.activityId);
+    return a ? `פעילות: ${a.name}` : 'פעילות';
+  }
+  return '';
+}
+
+// ===== JSON Backup =====
+function exportJSON() {
   const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -1335,6 +1350,360 @@ function exportData() {
   a.download = `miluim_backup_${new Date().toISOString().slice(0, 10)}.json`;
   a.click();
   URL.revokeObjectURL(url);
+}
+
+// ===== Excel Export =====
+function loadSheetJS() {
+  return new Promise((resolve, reject) => {
+    if (typeof XLSX !== 'undefined') return resolve();
+    const script = document.createElement('script');
+    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+    script.onload = resolve;
+    script.onerror = () => reject(new Error('טעינת ספריית Excel נכשלה. בדוק חיבור לאינטרנט.'));
+    document.head.appendChild(script);
+  });
+}
+
+async function exportToExcel() {
+  try {
+    await loadSheetJS();
+    
+    const periodLabel = getPeriodLabel();
+    const filteredActivities = getFilteredActivities();
+    
+    const allStats = state.people.map(p => ({
+      person: p,
+      stats: getPersonStats(p.id)
+    }));
+    const grandTotalDays = allStats.reduce((s, p) => s + p.stats.totalDays, 0);
+    const activePeopleCount = allStats.filter(s => s.stats.totalDays > 0).length;
+    
+    // Sheet 1: People Summary (ranked)
+    const peopleSummary = [...allStats]
+      .sort((a, b) => b.stats.totalDays - a.stats.totalDays || a.person.name.localeCompare(b.person.name, 'he'))
+      .map(({person, stats}, idx) => ({
+        'דירוג': stats.totalDays > 0 ? idx + 1 : '',
+        'שם מלא': person.name,
+        'מ.א.': person.id,
+        'סך ימים': stats.totalDays,
+        'מס׳ זימונים': stats.activities.length,
+        'אחוז מהסך': grandTotalDays > 0 ? +((stats.totalDays / grandTotalDays) * 100).toFixed(2) : 0,
+        'פעילויות': stats.activities.map(a => `${a.name} (${getDaysForActivityInFilter(a)}י׳)`).join(' | ')
+      }));
+    
+    // Sheet 2: Activities
+    const activitiesData = [...filteredActivities]
+      .sort((a, b) => new Date(b.startDate) - new Date(a.startDate))
+      .map(a => {
+        const participants = a.participants
+          .map(pid => state.people.find(p => p.id === pid))
+          .filter(p => p)
+          .map(p => p.name);
+        return {
+          'שם הפעילות': a.name,
+          'מתאריך': formatDate(a.startDate),
+          'עד תאריך': formatDate(a.endDate),
+          'משך מקורי (ימים)': daysBetween(a.startDate, a.endDate),
+          'ימים בתקופה': getDaysForActivityInFilter(a),
+          'מס׳ משתתפים': a.participants.length,
+          'משתתפים': participants.join(', ')
+        };
+      });
+    
+    // Sheet 3: Detailed (person × activity)
+    const detailed = [];
+    [...allStats]
+      .sort((a, b) => a.person.name.localeCompare(b.person.name, 'he'))
+      .forEach(({person, stats}) => {
+        if (stats.activities.length === 0) {
+          detailed.push({
+            'שם': person.name,
+            'מ.א.': person.id,
+            'פעילות': '(אין זימונים בתקופה)',
+            'מתאריך': '',
+            'עד תאריך': '',
+            'ימים': 0
+          });
+        } else {
+          stats.activities
+            .sort((a, b) => new Date(a.startDate) - new Date(b.startDate))
+            .forEach(a => {
+              detailed.push({
+                'שם': person.name,
+                'מ.א.': person.id,
+                'פעילות': a.name,
+                'מתאריך': formatDate(a.startDate),
+                'עד תאריך': formatDate(a.endDate),
+                'ימים': getDaysForActivityInFilter(a)
+              });
+            });
+        }
+      });
+    
+    // Sheet 4: Metadata
+    const meta = [
+      { 'מאפיין': 'תאריך הפקת הדוח', 'ערך': new Date().toLocaleString('he-IL') },
+      { 'מאפיין': 'תקופה', 'ערך': periodLabel },
+      { 'מאפיין': 'סך אנשים ברשימה', 'ערך': state.people.length },
+      { 'מאפיין': 'אנשים פעילים בתקופה', 'ערך': activePeopleCount },
+      { 'מאפיין': 'סך פעילויות בתקופה', 'ערך': filteredActivities.length },
+      { 'מאפיין': 'סך ימי-אדם בתקופה', 'ערך': grandTotalDays },
+      { 'מאפיין': 'ממוצע ימים לאיש פעיל', 'ערך': activePeopleCount > 0 ? +(grandTotalDays / activePeopleCount).toFixed(2) : 0 }
+    ];
+    
+    const wb = XLSX.utils.book_new();
+    wb.Workbook = { Views: [{ RTL: true }] };
+    
+    const ws1 = XLSX.utils.json_to_sheet(peopleSummary);
+    ws1['!cols'] = [{wch:8},{wch:25},{wch:12},{wch:10},{wch:14},{wch:12},{wch:60}];
+    XLSX.utils.book_append_sheet(wb, ws1, 'סיכום אנשים');
+    
+    const ws2 = XLSX.utils.json_to_sheet(activitiesData);
+    ws2['!cols'] = [{wch:30},{wch:14},{wch:14},{wch:18},{wch:16},{wch:14},{wch:80}];
+    XLSX.utils.book_append_sheet(wb, ws2, 'פעילויות');
+    
+    const ws3 = XLSX.utils.json_to_sheet(detailed);
+    ws3['!cols'] = [{wch:25},{wch:12},{wch:30},{wch:14},{wch:14},{wch:10}];
+    XLSX.utils.book_append_sheet(wb, ws3, 'פירוט מלא');
+    
+    const ws4 = XLSX.utils.json_to_sheet(meta);
+    ws4['!cols'] = [{wch:25},{wch:35}];
+    XLSX.utils.book_append_sheet(wb, ws4, 'מידע');
+    
+    const safeLabel = periodLabel.replace(/[\\\/:"*?<>|]/g, '_');
+    XLSX.writeFile(wb, `דוח_מילואים_${safeLabel}_${new Date().toISOString().slice(0,10)}.xlsx`);
+  } catch(e) {
+    alert('שגיאה בייצוא לאקסל: ' + e.message);
+    console.error(e);
+  }
+}
+
+// ===== Printable Report =====
+function exportToReport() {
+  const periodLabel = getPeriodLabel();
+  const filteredActivities = getFilteredActivities();
+  
+  const allStats = state.people.map(p => ({ person: p, stats: getPersonStats(p.id) }));
+  const activeStats = allStats.filter(s => s.stats.totalDays > 0)
+    .sort((a, b) => b.stats.totalDays - a.stats.totalDays);
+  const grandTotalDays = activeStats.reduce((s, p) => s + p.stats.totalDays, 0);
+  const activePeopleCount = activeStats.length;
+  const maxDays = activeStats[0]?.stats.totalDays || 1;
+  
+  const fullList = [...allStats].sort((a, b) => 
+    b.stats.totalDays - a.stats.totalDays || a.person.name.localeCompare(b.person.name, 'he')
+  );
+  
+  const sortedActs = [...filteredActivities].sort((a, b) => new Date(b.startDate) - new Date(a.startDate));
+  
+  const reportHTML = `<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>דוח מילואים - ${escapeHtml(periodLabel)}</title>
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;500;600;700&family=Frank+Ruhl+Libre:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Assistant', sans-serif; padding: 24px 32px 32px; color: #1a202c; font-size: 14px; line-height: 1.5; background: white; }
+  h1 { font-family: 'Frank Ruhl Libre', serif; font-size: 30px; color: #1a2942; margin-bottom: 4px; letter-spacing: -0.5px; }
+  h2 { font-family: 'Frank Ruhl Libre', serif; font-size: 22px; color: #1a2942; margin: 28px 0 12px; border-bottom: 2.5px solid #b8975a; padding-bottom: 8px; }
+  .subtitle { font-size: 18px; color: #5a6478; margin-bottom: 4px; font-weight: 500; }
+  .meta { font-size: 13px; color: #8a92a3; margin-bottom: 20px; }
+  
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 14px 0 20px; }
+  .stat { background: #f7f4ed; padding: 12px 16px; border-radius: 8px; border-right: 4px solid #b8975a; }
+  .stat-label { font-size: 12px; color: #5a6478; margin-bottom: 4px; font-weight: 500; }
+  .stat-value { font-family: 'Frank Ruhl Libre', serif; font-size: 22px; color: #1a2942; font-weight: 700; line-height: 1; }
+  .stat-unit { font-family: 'Assistant', sans-serif; font-size: 13px; color: #8a92a3; font-weight: 400; margin-right: 3px; }
+  
+  table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 13px; }
+  th, td { padding: 7px 10px; text-align: right; border-bottom: 1px solid #e5dfd2; }
+  th { background: #1a2942; color: white; font-weight: 600; }
+  tr:nth-child(even) td { background: #faf8f2; }
+  
+  .rank-1 td { background: #fdf4d4 !important; font-weight: 600; }
+  .rank-2 td { background: #f0f2f5 !important; font-weight: 600; }
+  .rank-3 td { background: #fbe9d8 !important; font-weight: 600; }
+  
+  .rank-cell { width: 50px; text-align: center; font-weight: 700; font-size: 14px; }
+  .num-cell { text-align: center; font-feature-settings: "tnum"; }
+  
+  .bar-wrap { width: 140px; height: 10px; background: #f0ebe0; border-radius: 3px; overflow: hidden; display: inline-block; vertical-align: middle; }
+  .bar { height: 100%; background: linear-gradient(to left, #b8975a, #d4b87a); }
+  .rank-1 .bar { background: linear-gradient(to left, #d4af37, #f0d870); }
+  .rank-2 .bar { background: linear-gradient(to left, #c0c4cc, #d8dce4); }
+  .rank-3 .bar { background: linear-gradient(to left, #cd7f32, #e09850); }
+  
+  .actions {
+    position: fixed; top: 16px; left: 16px;
+    display: flex; gap: 8px; z-index: 100;
+    background: white; padding: 8px; border-radius: 10px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+  }
+  .actions button {
+    padding: 10px 20px; font-size: 15px; font-weight: 600;
+    border: none; border-radius: 6px; cursor: pointer;
+    font-family: 'Assistant', sans-serif;
+  }
+  .btn-print { background: #1a2942; color: white; }
+  .btn-print:hover { background: #2a3f5f; }
+  .btn-close { background: #e8e3d8; color: #1a2942; }
+  
+  .footer { margin-top: 32px; padding-top: 16px; border-top: 1px solid #e5dfd2; font-size: 12px; color: #8a92a3; text-align: center; }
+  
+  @media print {
+    .actions { display: none; }
+    body { padding: 14px 18px; font-size: 11px; }
+    h1 { font-size: 24px; }
+    h2 { font-size: 18px; margin: 20px 0 10px; page-break-after: avoid; }
+    .stat-value { font-size: 18px; }
+    table { font-size: 11px; page-break-inside: auto; }
+    th, td { padding: 5px 8px; }
+    tr { page-break-inside: avoid; }
+    thead { display: table-header-group; }
+    .stats { page-break-inside: avoid; }
+  }
+  
+  @page { margin: 1.4cm 1cm; size: A4; }
+</style>
+</head>
+<body>
+  <div class="actions">
+    <button class="btn-print" onclick="window.print()">🖨️ הדפס / שמור כ-PDF</button>
+    <button class="btn-close" onclick="window.close()">סגור</button>
+  </div>
+  
+  <h1>🎖️ דוח מעקב ימי מילואים</h1>
+  <div class="subtitle">${escapeHtml(periodLabel)}</div>
+  <div class="meta">הופק בתאריך ${new Date().toLocaleString('he-IL')}</div>
+  
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-label">אנשים פעילים</div>
+      <div class="stat-value">${activePeopleCount}<span class="stat-unit">/ ${state.people.length}</span></div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">סך פעילויות</div>
+      <div class="stat-value">${filteredActivities.length}</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">סך ימי-אדם</div>
+      <div class="stat-value">${grandTotalDays}<span class="stat-unit">ימים</span></div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">ממוצע לאיש פעיל</div>
+      <div class="stat-value">${activePeopleCount > 0 ? (grandTotalDays / activePeopleCount).toFixed(1) : 0}<span class="stat-unit">ימים</span></div>
+    </div>
+  </div>
+  
+  ${activeStats.length > 0 ? `
+  <h2>🏆 בולטים - ${Math.min(15, activeStats.length)} הראשונים</h2>
+  <table>
+    <thead>
+      <tr>
+        <th class="rank-cell">דירוג</th>
+        <th>שם</th>
+        <th>מ.א.</th>
+        <th class="num-cell">סך ימים</th>
+        <th class="num-cell">זימונים</th>
+        <th class="num-cell">אחוז</th>
+        <th>השוואה ויזואלית</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${activeStats.slice(0, 15).map((s, i) => {
+        const pct = grandTotalDays > 0 ? (s.stats.totalDays / grandTotalDays) * 100 : 0;
+        const barW = (s.stats.totalDays / maxDays) * 140;
+        const rankClass = i < 3 ? `rank-${i+1}` : '';
+        const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : '';
+        return `
+          <tr class="${rankClass}">
+            <td class="rank-cell">${medal} ${i+1}</td>
+            <td><strong>${escapeHtml(s.person.name)}</strong></td>
+            <td>${s.person.id}</td>
+            <td class="num-cell"><strong>${s.stats.totalDays}</strong></td>
+            <td class="num-cell">${s.stats.activities.length}</td>
+            <td class="num-cell">${pct.toFixed(1)}%</td>
+            <td><div class="bar-wrap"><div class="bar" style="width:${barW}px"></div></div></td>
+          </tr>
+        `;
+      }).join('')}
+    </tbody>
+  </table>
+  ` : ''}
+  
+  <h2>👥 רשימה מלאה - ${state.people.length} אנשים</h2>
+  <table>
+    <thead>
+      <tr>
+        <th class="num-cell">#</th>
+        <th>שם</th>
+        <th>מ.א.</th>
+        <th class="num-cell">סך ימים</th>
+        <th class="num-cell">זימונים</th>
+        <th class="num-cell">אחוז מהסך</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${fullList.map((s, i) => {
+        const pct = grandTotalDays > 0 ? (s.stats.totalDays / grandTotalDays) * 100 : 0;
+        return `
+          <tr>
+            <td class="num-cell">${i+1}</td>
+            <td>${escapeHtml(s.person.name)}</td>
+            <td>${s.person.id}</td>
+            <td class="num-cell">${s.stats.totalDays}</td>
+            <td class="num-cell">${s.stats.activities.length}</td>
+            <td class="num-cell">${pct.toFixed(1)}%</td>
+          </tr>
+        `;
+      }).join('')}
+    </tbody>
+  </table>
+  
+  ${sortedActs.length > 0 ? `
+  <h2>📋 פעילויות בתקופה</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>שם הפעילות</th>
+        <th>מתאריך</th>
+        <th>עד תאריך</th>
+        <th class="num-cell">ימים</th>
+        <th class="num-cell">משתתפים</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${sortedActs.map(a => {
+        const days = getDaysForActivityInFilter(a);
+        return `
+          <tr>
+            <td><strong>${escapeHtml(a.name)}</strong></td>
+            <td>${formatDate(a.startDate)}</td>
+            <td>${formatDate(a.endDate)}</td>
+            <td class="num-cell">${days}</td>
+            <td class="num-cell">${a.participants.length}</td>
+          </tr>
+        `;
+      }).join('')}
+    </tbody>
+  </table>
+  ` : ''}
+  
+  <div class="footer">
+    דוח זה הופק אוטומטית · ${new Date().toLocaleDateString('he-IL')} · מעקב אחרי ימי מילואים
+  </div>
+</body>
+</html>`;
+  
+  const win = window.open('', '_blank');
+  if (!win) {
+    alert('הדפדפן חסם פתיחת חלון חדש. אנא אפשר חלונות קופצים לאתר זה ונסה שוב.');
+    return;
+  }
+  win.document.open();
+  win.document.write(reportHTML);
+  win.document.close();
 }
 
 function importData(event) {
