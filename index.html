@@ -243,6 +243,11 @@
   .pm-act-dates input[type="date"] { font-size: 17px; }
   .pm-days { font-size: 17px; font-weight: 600; color: var(--primary); }
   .pm-act-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  .pm-org { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; margin-bottom: 10px; padding: 10px 12px; background: #f3f6fa; border-radius: 9px; }
+  .pm-org label { font-size: 15px; color: var(--text-light); display: flex; flex-direction: column; gap: 3px; }
+  .pm-org input[type="number"] { font-size: 17px; width: 110px; }
+  .pm-org-info { font-size: 16px; color: var(--text-light); }
+  .pm-closing { font-size: 16px; color: var(--primary); }
   .pm-add { margin-top: 18px; padding-top: 16px; border-top: 2px solid var(--border-light); }
 
   /* Modal */
@@ -717,12 +722,15 @@ function migrateState() {
   if (!Array.isArray(state.activities)) state.activities = [];
   if (!Array.isArray(state.grantTypes)) state.grantTypes = BUILTIN_GRANT_TYPES.map(t => ({ ...t }));
   if (!Array.isArray(state.grants)) state.grants = [];
-  // Convert legacy participants ["id", ...] -> [{ id, startDate?, endDate? }, ...]
+  // Convert legacy participants ["id", ...] -> [{ id, startDate?, endDate?, orgDays? }, ...]
   state.activities.forEach(a => {
     if (!Array.isArray(a.participants)) { a.participants = []; return; }
     a.participants = a.participants
       .map(p => (typeof p === 'string') ? { id: p } : (p && p.id ? p : null))
       .filter(Boolean);
+    a.participants.forEach(p => {
+      if (p.orgDays != null) { const n = Number(p.orgDays); if (Number.isFinite(n) && n >= 0) p.orgDays = Math.round(n); else delete p.orgDays; }
+    });
   });
 }
 
@@ -778,6 +786,27 @@ function activityHasPerson(activity, personId) { return (activity.participants |
 function partStart(part, activity) { return (part && part.startDate) ? part.startDate : activity.startDate; }
 function partEnd(part, activity) { return (part && part.endDate) ? part.endDate : activity.endDate; }
 function partHasOverride(part) { return !!(part && (part.startDate || part.endDate)); }
+function addDays(dateStr, n) {
+  const d = new Date(dateStr + 'T00:00:00');
+  d.setDate(d.getDate() + (n || 0));
+  return d.toISOString().slice(0, 10);
+}
+// Organization (recovery) days by continuous order length - per mission, IDF brackets.
+function orgDaysFor(days) {
+  if (days < 10) return 0;
+  if (days <= 14) return 2;
+  if (days <= 28) return 3;
+  if (days <= 42) return 5;
+  if (days <= 56) return 7;
+  return 9;
+}
+function partContinuousDays(part, activity) { return daysBetween(partStart(part, activity), partEnd(part, activity)); }
+function partOrgOverridden(part) { return part && typeof part.orgDays === 'number'; }
+function partOrgDays(part, activity) {
+  if (partOrgOverridden(part)) return part.orgDays;          // manual fix (e.g. system error)
+  return orgDaysFor(partContinuousDays(part, activity));      // auto by continuous days
+}
+function partClosingDate(part, activity) { return addDays(partEnd(part, activity), partOrgDays(part, activity)); }
 function overlapRange(startStr, endStr, periodStart, periodEnd) {
   const s = new Date(startStr + 'T00:00:00'), e = new Date(endStr + 'T00:00:00');
   const ps = new Date(periodStart + 'T00:00:00'), pe = new Date(periodEnd + 'T00:00:00');
@@ -839,6 +868,7 @@ function getDischargeEvents() {
   state.activities.forEach(a => {
     (a.participants || []).forEach(part => {
       const s = partStart(part, a), e = partEnd(part, a);
+      const org = partOrgDays(part, a);
       events.push({
         personId: part.id,
         personName: getPersonName(part.id),
@@ -847,7 +877,10 @@ function getDischargeEvents() {
         startDate: s,
         dischargeDate: e,
         days: daysBetween(s, e),
-        override: partHasOverride(part)
+        override: partHasOverride(part),
+        orgDays: org,
+        orgOverride: partOrgOverridden(part),
+        closingDate: addDays(e, org)
       });
     });
   });
@@ -1061,7 +1094,8 @@ function renderOpenTab() {
           <div class="discharge-row">
             <div class="discharge-info">
               <div class="discharge-who">${escapeHtml(e.personName)} <span style="color:var(--text-muted); font-size:15px; font-weight:400;">· ${e.personId}</span></div>
-              <div class="discharge-what">${escapeHtml(e.activityName)} · ${e.days} ימים · מ-${formatDate(e.startDate)}${e.override ? ' · <span style="color:var(--accent-dark); font-weight:600;">✎ תאריך אישי</span>' : ''}</div>
+              <div class="discharge-what">${escapeHtml(e.activityName)} · ${e.days} ימי צו · מ-${formatDate(e.startDate)}${e.override ? ' · <span style="color:var(--accent-dark); font-weight:600;">✎ תאריך אישי</span>' : ''}</div>
+              <div class="discharge-what" style="margin-top:2px;">🛠️ ${e.orgDays} ימי התארגנות${e.orgOverride ? ' <span style="color:var(--accent-dark); font-weight:600;">(תוקן ידנית)</span>' : ''} · 🏁 סגירה: <strong>${formatDate(e.closingDate)}</strong></div>
             </div>
             <div style="display:flex; align-items:center; gap:8px; flex-shrink:0;">
               <span class="badge ${badgeClass}">${rel}</span>
@@ -1114,10 +1148,11 @@ function renderClosingTab() {
           <div class="discharge-row">
             <div class="discharge-info">
               <div class="discharge-who">${escapeHtml(e.personName)} <span style="color:var(--text-muted); font-size:15px; font-weight:400;">· ${e.personId}</span></div>
-              <div class="discharge-what">${escapeHtml(e.activityName)} · ${e.days} ימים${e.override ? ' · <span style="color:var(--accent-dark); font-weight:600;">✎ תאריך אישי</span>' : ''}</div>
+              <div class="discharge-what">${escapeHtml(e.activityName)} · ${e.days} ימי צו${e.override ? ' · <span style="color:var(--accent-dark); font-weight:600;">✎ תאריך אישי</span>' : ''}</div>
+              <div class="discharge-what" style="margin-top:2px;">🔚 שחרור: ${formatDate(e.dischargeDate)} · 🛠️ ${e.orgDays} ימי התארגנות${e.orgOverride ? ' <span style="color:var(--accent-dark); font-weight:600;">(תוקן ידנית)</span>' : ''} · 🏁 סגירה: <strong>${formatDate(e.closingDate)}</strong></div>
             </div>
             <div style="display:flex; align-items:center; gap:8px; flex-shrink:0;">
-              <span class="badge closed" style="background:#eef2f8; color:var(--primary);">📅 ${formatDate(e.dischargeDate)}</span>
+              <span class="badge closed" style="background:#eef2f8; color:var(--primary);">🏁 ${formatDate(e.closingDate)}</span>
               <button class="btn-neutral btn-sm" onclick="openPersonModal('${e.personId}')">✎</button>
             </div>
           </div>`).join('')}
@@ -1356,8 +1391,12 @@ function renderPersonModal() {
         const has = partHasOverride(part);
         const effS = partStart(part, a), effE = partEnd(part, a);
         const days = daysBetween(effS, effE);
+        const autoOrg = orgDaysFor(days);
+        const org = partOrgDays(part, a);
+        const orgOv = partOrgOverridden(part);
+        const closing = addDays(effE, org);
         return `
-          <div class="pm-act${has ? ' has-override' : ''}">
+          <div class="pm-act${(has || orgOv) ? ' has-override' : ''}">
             <div class="pm-act-head">
               <div class="pm-act-name">${escapeHtml(a.name)} ${has ? '<span style="color:var(--accent-dark); font-size:15px;">✎ תאריך אישי</span>' : ''}</div>
               <div class="pm-act-default">ברירת מחדל בשמ"פ: ${formatDate(a.startDate)} - ${formatDate(a.endDate)}</div>
@@ -1365,10 +1404,16 @@ function renderPersonModal() {
             <div class="pm-act-dates">
               <label>התחלה<input type="date" value="${part.startDate || ''}" placeholder="${a.startDate}" onchange="setPersonOverride('${a.id}','startDate',this.value)"></label>
               <label>יום שחרור<input type="date" value="${part.endDate || ''}" onchange="setPersonOverride('${a.id}','endDate',this.value)"></label>
-              <span class="pm-days">${days} ימים<br><span style="font-weight:400; color:var(--text-light); font-size:14px;">שחרור בפועל: ${formatDate(effE)}</span></span>
+              <span class="pm-days">${days} ימי צו רצוף</span>
+            </div>
+            <div class="pm-org">
+              <label>ימי התארגנות<input type="number" min="0" step="1" value="${orgOv ? part.orgDays : ''}" placeholder="${autoOrg}" onchange="setPersonOrgOverride('${a.id}', this.value)"></label>
+              <span class="pm-org-info">חישוב אוטומטי: <strong>${autoOrg}</strong> ימים${orgOv ? ` · <span style="color:var(--accent-dark);">תוקן ל-${org}</span>` : ''}</span>
+              <span class="pm-closing">🏁 תאריך סגירה: <strong>${formatDate(closing)}</strong></span>
             </div>
             <div class="pm-act-actions">
-              ${has ? `<button class="btn-neutral btn-sm" onclick="resetPersonOverride('${a.id}')">↺ ברירת מחדל</button>` : ''}
+              ${has ? `<button class="btn-neutral btn-sm" onclick="resetPersonOverride('${a.id}')">↺ אפס תאריכים</button>` : ''}
+              ${orgOv ? `<button class="btn-neutral btn-sm" onclick="setPersonOrgOverride('${a.id}','')">↺ אפס ימי התארגנות</button>` : ''}
               <button class="btn-danger btn-sm" onclick="removePersonFromActivity('${a.id}')">הסר מהשמ"פ</button>
             </div>
           </div>`;
@@ -1410,6 +1455,19 @@ function resetPersonOverride(activityId) {
   const part = getParticipant(a, currentPersonModalId);
   if (!part) return;
   delete part.startDate; delete part.endDate;
+  saveState(); renderPersonModal(); render();
+}
+function setPersonOrgOverride(activityId, value) {
+  const a = state.activities.find(x => x.id === activityId);
+  const part = getParticipant(a, currentPersonModalId);
+  if (!part) return;
+  const v = String(value).trim();
+  if (v === '') { delete part.orgDays; }
+  else {
+    const n = parseInt(v, 10);
+    if (isNaN(n) || n < 0) { alert('ימי התארגנות חייב להיות מספר שלם אי-שלילי.'); renderPersonModal(); return; }
+    part.orgDays = n;
+  }
   saveState(); renderPersonModal(); render();
 }
 function removePersonFromActivity(activityId) {
@@ -1625,6 +1683,9 @@ function normalizeImported(imported) {
     a.participants = a.participants
       .map(p => (typeof p === 'string') ? { id: p } : (p && p.id ? p : null))
       .filter(Boolean);
+    a.participants.forEach(p => {
+      if (p.orgDays != null) { const n = Number(p.orgDays); if (Number.isFinite(n) && n >= 0) p.orgDays = Math.round(n); else delete p.orgDays; }
+    });
   });
   return imported;
 }
@@ -1726,7 +1787,7 @@ function buildReadableText(opts) {
       const [y, m] = k.split('-').map(Number);
       L.push(`${MONTH_NAMES[m]} ${y}:`);
       byMonth[k].sort((a, b) => a.dischargeDate.localeCompare(b.dischargeDate) || a.personName.localeCompare(b.personName, 'he'))
-        .forEach(e => L.push(`  ${formatDate(e.dischargeDate)} - ${e.personName} (${e.activityName})${e.override ? ' [תאריך אישי]' : ''}`));
+        .forEach(e => L.push(`  ${formatDate(e.dischargeDate)} - ${e.personName} (${e.activityName}) | ${e.orgDays} ימי התארגנות${e.orgOverride ? ' (תוקן)' : ''} | סגירה: ${formatDate(e.closingDate)}${e.override ? ' [תאריך אישי]' : ''}`));
     });
     L.push('');
   }
@@ -1852,7 +1913,7 @@ async function exportToExcel() {
       };
     });
 
-    // Discharge schedule (by date)
+    // Discharge schedule (by date) - includes org days + closing date
     const discharge = getDischargeEvents()
       .sort((a, b) => a.dischargeDate.localeCompare(b.dischargeDate) || a.personName.localeCompare(b.personName, 'he'))
       .map(e => ({
@@ -1861,8 +1922,11 @@ async function exportToExcel() {
         'שם': e.personName,
         'מ.א.': e.personId,
         'פעילות': e.activityName,
-        'ימים': e.days,
-        'תאריך אישי': e.override ? 'כן' : ''
+        'ימי צו רצוף': e.days,
+        'ימי התארגנות': e.orgDays,
+        'תאריך סגירה': formatDate(e.closingDate),
+        'תאריך אישי': e.override ? 'כן' : '',
+        'התארגנות תוקנה': e.orgOverride ? 'כן' : ''
       }));
 
     const grantsData = [...state.grants].sort((a, b) => {
@@ -1887,7 +1951,7 @@ async function exportToExcel() {
     const add = (data, name, cols) => { const ws = XLSX.utils.json_to_sheet(data.length ? data : [{}]); if (cols) ws['!cols'] = cols; XLSX.utils.book_append_sheet(wb, ws, name); };
     add(peopleSummary, 'סיכום אנשים', [{wch:8},{wch:25},{wch:12},{wch:10},{wch:14},{wch:12},{wch:12},{wch:55},{wch:45}]);
     add(activitiesData, 'פעילויות', [{wch:30},{wch:14},{wch:16},{wch:12},{wch:14},{wch:12},{wch:80}]);
-    add(discharge, 'סגירת שמפ', [{wch:14},{wch:18},{wch:25},{wch:12},{wch:30},{wch:10},{wch:12}]);
+    add(discharge, 'סגירת שמפ', [{wch:14},{wch:18},{wch:25},{wch:12},{wch:30},{wch:12},{wch:14},{wch:14},{wch:12},{wch:14}]);
     add(grantsData, 'מענקים', [{wch:24},{wch:25},{wch:12},{wch:14},{wch:35}]);
     add(meta, 'מידע', [{wch:25},{wch:35}]);
 
@@ -2006,8 +2070,8 @@ function exportToReport() {
     const [y, m] = key.split('-').map(Number);
     const list = byMonth[key].sort((a, b) => a.dischargeDate.localeCompare(b.dischargeDate) || a.personName.localeCompare(b.personName, 'he'));
     return `<h3>${MONTH_NAMES[m]} ${y} (${list.length} שחרורים)</h3>
-    <table><thead><tr><th>יום שחרור</th><th>שם</th><th>מ.א.</th><th>פעילות</th><th class="num-cell">ימים</th></tr></thead><tbody>
-    ${list.map(e => `<tr><td>${formatDate(e.dischargeDate)}${e.override ? ' ✎' : ''}</td><td>${escapeHtml(e.personName)}</td><td>${e.personId}</td><td>${escapeHtml(e.activityName)}</td><td class="num-cell">${e.days}</td></tr>`).join('')}
+    <table><thead><tr><th>יום שחרור</th><th>שם</th><th>מ.א.</th><th>פעילות</th><th class="num-cell">ימי צו</th><th class="num-cell">התארגנות</th><th>תאריך סגירה</th></tr></thead><tbody>
+    ${list.map(e => `<tr><td>${formatDate(e.dischargeDate)}${e.override ? ' ✎' : ''}</td><td>${escapeHtml(e.personName)}</td><td>${e.personId}</td><td>${escapeHtml(e.activityName)}</td><td class="num-cell">${e.days}</td><td class="num-cell">${e.orgDays}${e.orgOverride ? '*' : ''}</td><td><strong>${formatDate(e.closingDate)}</strong></td></tr>`).join('')}
     </tbody></table>`;
   }).join('')}` : ''}
   ${sortedGrants.length > 0 ? `
