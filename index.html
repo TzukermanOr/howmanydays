@@ -221,6 +221,29 @@
   .activities-list { margin-top: 8px; }
   .activity-tag { display: inline-block; background: #eef2f8; color: var(--primary); padding: 5px 12px; border-radius: 8px; margin: 4px 0 4px 4px; font-size: 17px; border: 1px solid #dde4ed; transition: all 0.15s; }
   .activity-tag:hover { background: #e3eaf3; }
+  .activity-tag.custom { background: #f7f0e0; color: var(--accent-dark); border-color: #ecdfc4; }
+
+  /* Per-person override editor (activity modal) */
+  .override-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 8px; flex-wrap: wrap; }
+  .override-row:hover { background: white; }
+  .override-row.has-override { background: #fbf6ea; border: 1px solid #ecdfc4; }
+  .override-name { font-size: 18px; font-weight: 600; color: var(--primary); min-width: 140px; }
+  .override-dates { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .override-dates label { font-size: 14px; color: var(--text-light); display: flex; flex-direction: column; gap: 2px; }
+  .override-dates input[type="date"] { font-size: 16px; padding: 6px 8px; }
+
+  /* Person detail modal */
+  .pm-act { border: 1.5px solid var(--border-light); border-radius: 12px; padding: 14px 16px; margin-bottom: 12px; background: #fdfcf8; }
+  .pm-act.has-override { background: #fbf6ea; border-color: #ecdfc4; }
+  .pm-act-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .pm-act-name { font-size: 20px; font-weight: 600; color: var(--primary); }
+  .pm-act-default { font-size: 15px; color: var(--text-muted); }
+  .pm-act-dates { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; margin-bottom: 10px; }
+  .pm-act-dates label { font-size: 15px; color: var(--text-light); display: flex; flex-direction: column; gap: 3px; }
+  .pm-act-dates input[type="date"] { font-size: 17px; }
+  .pm-days { font-size: 17px; font-weight: 600; color: var(--primary); }
+  .pm-act-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  .pm-add { margin-top: 18px; padding-top: 16px; border-top: 2px solid var(--border-light); }
 
   /* Modal */
   .modal-overlay { position: fixed; inset: 0; background: rgba(15,26,46,0.55); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 20px; }
@@ -458,9 +481,26 @@
         </div>
         <div class="people-picker" id="peoplePicker"></div>
       </div>
+      <div class="form-group">
+        <label>תאריכים אישיים (אופציונלי - מי שחורג מהשמ"פ הכללי)</label>
+        <div style="font-size:15px; color:var(--text-light); margin-bottom:8px;">השאר ריק = משתמש בתאריכי השמ"פ למעלה. מילוי יום שחרור שונה ישנה רק לאדם הזה.</div>
+        <div id="overrideList" style="max-height:260px; overflow-y:auto; border:1.5px solid var(--border); border-radius:10px; padding:8px; background:#fafaf6;"></div>
+      </div>
       <div class="modal-actions">
         <button class="btn-neutral" onclick="closeActivityModal()">ביטול</button>
         <button class="btn-success" onclick="saveActivity()">שמור פעילות</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PERSON DETAIL MODAL (individual editing) -->
+  <div class="modal-overlay" id="personModal">
+    <div class="modal">
+      <h2 id="personModalTitle" style="margin-bottom:4px; border:none; padding-bottom:0;">עריכה אישית</h2>
+      <div id="personModalSub" style="color:var(--text-muted); font-size:17px; margin-bottom:18px; padding-bottom:14px; border-bottom:2px solid var(--border-light);"></div>
+      <div id="personModalBody"></div>
+      <div class="modal-actions">
+        <button class="btn-success" onclick="closePersonModal()">סגור</button>
       </div>
     </div>
   </div>
@@ -524,19 +564,32 @@
   <div class="modal-overlay" id="textModal">
     <div class="modal">
       <h2>ייצוא / ייבוא טקסט</h2>
-      <p style="font-size:17px; color:var(--text-light); margin-bottom:14px;">
-        כל הנתונים (אנשים, פעילויות ומענקים) בפורמט טקסט. אפשר להעתיק את הטקסט, לשמור כקובץ .txt, או להדביק טקסט קיים וללחוץ "ייבא".
-      </p>
-      <textarea id="textData" spellcheck="false" style="width:100%; height:300px; font-family:ui-monospace,'Courier New',monospace; font-size:14px; padding:12px; border:1.5px solid var(--border); border-radius:9px; direction:ltr; text-align:left; resize:vertical; line-height:1.4;"></textarea>
+      <div class="tabs" style="margin-bottom:16px;">
+        <button class="tab-btn active" id="textModeReadableBtn" onclick="setTextMode('readable')">📤 טקסט קריא (לשליחה)</button>
+        <button class="tab-btn" id="textModeJsonBtn" onclick="setTextMode('json')">🗄️ גיבוי טכני (JSON)</button>
+      </div>
+      <div id="textReadableOpts" style="margin-bottom:12px;">
+        <div style="font-size:15px; color:var(--text-light); margin-bottom:8px;">בחר מה לכלול בטקסט:</div>
+        <div style="display:flex; gap:18px; flex-wrap:wrap;">
+          <label class="check-inline" style="padding-bottom:0;"><input type="checkbox" id="optRanking" checked onchange="refreshTextData()"> דירוג אנשים</label>
+          <label class="check-inline" style="padding-bottom:0;"><input type="checkbox" id="optActivities" checked onchange="refreshTextData()"> פעילויות</label>
+          <label class="check-inline" style="padding-bottom:0;"><input type="checkbox" id="optDischarge" checked onchange="refreshTextData()"> סגירת שמ"פ</label>
+          <label class="check-inline" style="padding-bottom:0;"><input type="checkbox" id="optGrants" checked onchange="refreshTextData()"> מענקים</label>
+        </div>
+      </div>
+      <p id="textJsonHint" style="font-size:16px; color:var(--text-light); margin-bottom:12px; display:none;">פורמט טכני לגיבוי ושחזור בלבד. הדבק כאן גיבוי קיים ולחץ "ייבא" כדי לשחזר נתונים.</p>
+      <textarea id="textData" spellcheck="false" style="width:100%; height:300px; font-size:15px; padding:12px; border:1.5px solid var(--border); border-radius:9px; resize:vertical; line-height:1.5;"></textarea>
       <div class="picker-toolbar" style="margin-top:12px;">
         <button class="btn-neutral btn-sm" onclick="copyTextData()">📋 העתק</button>
-        <button class="btn-neutral btn-sm" onclick="downloadTextData()">💾 הורד כ-.txt</button>
-        <button class="btn-neutral btn-sm" onclick="document.getElementById('importTextFile').click()">📂 טען קובץ טקסט</button>
+        <button class="btn-neutral btn-sm" onclick="downloadTextData()">💾 הורד .txt</button>
+        <button class="btn-neutral btn-sm" id="btnMail" onclick="sendAsEmail()">📧 שלח במייל</button>
+        <button class="btn-neutral btn-sm" id="btnWhatsapp" onclick="sendAsWhatsapp()">💬 וואטסאפ</button>
+        <button class="btn-neutral btn-sm" id="btnLoadFile" onclick="document.getElementById('importTextFile').click()" style="display:none;">📂 טען קובץ</button>
         <input type="file" id="importTextFile" accept=".txt,.json,text/plain" style="display:none" onchange="loadTextFile(event)">
       </div>
       <div class="modal-actions">
         <button class="btn-neutral" onclick="closeTextModal()">סגור</button>
-        <button class="btn-success" onclick="importFromText()">ייבא מהטקסט</button>
+        <button class="btn-success" id="btnImport" onclick="importFromText()" style="display:none;">ייבא מהטקסט</button>
       </div>
     </div>
   </div>
@@ -633,7 +686,10 @@ let currentTab = 'annual';
 let editingActivityId = null;
 let editingGrantId = null;
 let pickerSelection = new Set();
+let pickerOverrides = {};
 let grantPickerSelection = new Set();
+let currentPersonModalId = null;
+let textMode = 'readable';
 
 // ===== Persistence =====
 function loadState() {
@@ -661,6 +717,13 @@ function migrateState() {
   if (!Array.isArray(state.activities)) state.activities = [];
   if (!Array.isArray(state.grantTypes)) state.grantTypes = BUILTIN_GRANT_TYPES.map(t => ({ ...t }));
   if (!Array.isArray(state.grants)) state.grants = [];
+  // Convert legacy participants ["id", ...] -> [{ id, startDate?, endDate? }, ...]
+  state.activities.forEach(a => {
+    if (!Array.isArray(a.participants)) { a.participants = []; return; }
+    a.participants = a.participants
+      .map(p => (typeof p === 'string') ? { id: p } : (p && p.id ? p : null))
+      .filter(Boolean);
+  });
 }
 
 function saveState() {
@@ -706,6 +769,23 @@ function getGrantTypeName(typeId) {
   return t ? t.name : '(סוג נמחק)';
 }
 
+// ===== Participant model =====
+// participants are objects: { id, startDate?, endDate? }
+// startDate/endDate are OPTIONAL per-person overrides. If absent, the activity's
+// own startDate/endDate apply. The effective discharge day = override endDate || activity.endDate.
+function getParticipant(activity, personId) { return (activity.participants || []).find(p => p.id === personId); }
+function activityHasPerson(activity, personId) { return (activity.participants || []).some(p => p.id === personId); }
+function partStart(part, activity) { return (part && part.startDate) ? part.startDate : activity.startDate; }
+function partEnd(part, activity) { return (part && part.endDate) ? part.endDate : activity.endDate; }
+function partHasOverride(part) { return !!(part && (part.startDate || part.endDate)); }
+function overlapRange(startStr, endStr, periodStart, periodEnd) {
+  const s = new Date(startStr + 'T00:00:00'), e = new Date(endStr + 'T00:00:00');
+  const ps = new Date(periodStart + 'T00:00:00'), pe = new Date(periodEnd + 'T00:00:00');
+  const os = s > ps ? s : ps, oe = e < pe ? e : pe;
+  if (os > oe) return 0;
+  return Math.round((oe - os) / 86400000) + 1;
+}
+
 // ===== Scope logic (replaces old global filter) =====
 // scope: { type: 'all' } | { type: 'year', year: <number> }
 function activityDaysInScope(activity, scope) {
@@ -720,10 +800,24 @@ function grantsInScope(scope) {
   if (scope.type === 'year') return state.grants.filter(g => new Date(g.date + 'T00:00:00').getFullYear() === scope.year);
   return state.grants;
 }
+// Days for one person in one activity, honoring per-person overrides + scope.
+function partDaysInScope(part, activity, scope) {
+  const s = partStart(part, activity), e = partEnd(part, activity);
+  if (scope.type === 'year') return overlapRange(s, e, `${scope.year}-01-01`, `${scope.year}-12-31`);
+  return daysBetween(s, e);
+}
 function personStatsInScope(personId, scope) {
-  const acts = activitiesInScope(scope).filter(a => (a.participants || []).includes(personId));
-  const totalDays = acts.reduce((sum, a) => sum + activityDaysInScope(a, scope), 0);
-  return { totalDays, activities: acts };
+  const items = [];
+  let totalDays = 0;
+  state.activities.forEach(a => {
+    const part = getParticipant(a, personId);
+    if (!part) return;
+    const days = partDaysInScope(part, a, scope);
+    if (scope.type === 'year' && days === 0) return;
+    items.push({ activity: a, part, days, start: partStart(part, a), end: partEnd(part, a), override: partHasOverride(part) });
+    totalDays += days;
+  });
+  return { totalDays, activities: items };
 }
 function personGrantsInScope(personId, scope) {
   return grantsInScope(scope).filter(g => g.personId === personId);
@@ -739,19 +833,21 @@ function scopeLabel(scope) {
   return scope.type === 'year' ? `שנת ${scope.year}` : 'כל הזמנים';
 }
 
-// ===== Discharge events (one per person per activity; discharge day = activity end date) =====
+// ===== Discharge events (one per person per activity; discharge day = effective per-person end date) =====
 function getDischargeEvents() {
   const events = [];
   state.activities.forEach(a => {
-    (a.participants || []).forEach(pid => {
+    (a.participants || []).forEach(part => {
+      const s = partStart(part, a), e = partEnd(part, a);
       events.push({
-        personId: pid,
-        personName: getPersonName(pid),
+        personId: part.id,
+        personName: getPersonName(part.id),
         activityId: a.id,
         activityName: a.name,
-        startDate: a.startDate,
-        dischargeDate: a.endDate,
-        days: daysBetween(a.startDate, a.endDate)
+        startDate: s,
+        dischargeDate: e,
+        days: daysBetween(s, e),
+        override: partHasOverride(part)
       });
     });
   });
@@ -815,11 +911,17 @@ function renderAnnualTab() {
   const scope = getAnnualScope();
   const acts = activitiesInScope(scope);
 
-  // Stats
+  // Stats - sum per-person effective days (honors individual discharge overrides)
   let totalManDays = 0;
-  acts.forEach(a => { totalManDays += activityDaysInScope(a, scope) * (a.participants || []).length; });
   const activePeople = new Set();
-  acts.forEach(a => (a.participants || []).forEach(p => activePeople.add(p)));
+  state.activities.forEach(a => {
+    (a.participants || []).forEach(part => {
+      const days = partDaysInScope(part, a, scope);
+      if (days <= 0) return;
+      totalManDays += days;
+      activePeople.add(part.id);
+    });
+  });
   const avgDays = activePeople.size > 0 ? (totalManDays / activePeople.size).toFixed(1) : 0;
   const grantsCount = grantsInScope(scope).length;
 
@@ -891,9 +993,10 @@ function renderPeopleCards(scope, containerId, countId, search, sortBy) {
     const daysClass = p.stats.totalDays === 0 ? 'zero' : (isTop3 ? 'high' : '');
     const activitiesHTML = p.stats.activities.length === 0
       ? '<div style="color:var(--text-muted); font-size:18px; font-style:italic;">אין זימונים בתקופה הנבחרת</div>'
-      : p.stats.activities.map(a => {
-          const d = activityDaysInScope(a, scope);
-          return `<span class="activity-tag" title="${formatDate(a.startDate)} - ${formatDate(a.endDate)} · שחרור: ${formatDate(a.endDate)}">${escapeHtml(a.name)} · <strong>${d}</strong> ימים</span>`;
+      : p.stats.activities.map(it => {
+          const mark = it.override ? ' ✎' : '';
+          const title = `${formatDate(it.start)} - ${formatDate(it.end)} · שחרור: ${formatDate(it.end)}${it.override ? ' (תאריך אישי)' : ''}`;
+          return `<span class="activity-tag${it.override ? ' custom' : ''}" title="${title}">${escapeHtml(it.activity.name)} · <strong>${it.days}</strong> ימים · 🔚 ${formatDate(it.end)}${mark}</span>`;
         }).join('');
     const pg = personGrantsInScope(p.id, scope).sort((a, b) => new Date(b.date) - new Date(a.date));
     const grantsHTML = pg.length === 0 ? '' :
@@ -907,7 +1010,10 @@ function renderPeopleCards(scope, containerId, countId, search, sortBy) {
             <div class="person-name">${escapeHtml(p.name)}</div>
             <div class="person-id">מ.א. ${p.id}</div>
           </div>
-          <div class="person-days ${daysClass}">${p.stats.totalDays} ימים</div>
+          <div style="display:flex; flex-direction:column; align-items:flex-end; gap:8px;">
+            <div class="person-days ${daysClass}">${p.stats.totalDays} ימים</div>
+            <button class="btn-neutral btn-sm" onclick="openPersonModal('${p.id}')">✎ עריכה אישית</button>
+          </div>
         </div>
         <div class="activities-list">${activitiesHTML}</div>
         ${grantsHTML}
@@ -955,9 +1061,12 @@ function renderOpenTab() {
           <div class="discharge-row">
             <div class="discharge-info">
               <div class="discharge-who">${escapeHtml(e.personName)} <span style="color:var(--text-muted); font-size:15px; font-weight:400;">· ${e.personId}</span></div>
-              <div class="discharge-what">${escapeHtml(e.activityName)} · ${e.days} ימים · מ-${formatDate(e.startDate)}</div>
+              <div class="discharge-what">${escapeHtml(e.activityName)} · ${e.days} ימים · מ-${formatDate(e.startDate)}${e.override ? ' · <span style="color:var(--accent-dark); font-weight:600;">✎ תאריך אישי</span>' : ''}</div>
             </div>
-            <span class="badge ${badgeClass}">${rel}</span>
+            <div style="display:flex; align-items:center; gap:8px; flex-shrink:0;">
+              <span class="badge ${badgeClass}">${rel}</span>
+              <button class="btn-neutral btn-sm" onclick="openPersonModal('${e.personId}')">✎</button>
+            </div>
           </div>`).join('')}
       </div>`;
   }).join('');
@@ -1005,9 +1114,12 @@ function renderClosingTab() {
           <div class="discharge-row">
             <div class="discharge-info">
               <div class="discharge-who">${escapeHtml(e.personName)} <span style="color:var(--text-muted); font-size:15px; font-weight:400;">· ${e.personId}</span></div>
-              <div class="discharge-what">${escapeHtml(e.activityName)} · ${e.days} ימים</div>
+              <div class="discharge-what">${escapeHtml(e.activityName)} · ${e.days} ימים${e.override ? ' · <span style="color:var(--accent-dark); font-weight:600;">✎ תאריך אישי</span>' : ''}</div>
             </div>
-            <span class="badge closed" style="background:#eef2f8; color:var(--primary);">📅 ${formatDate(e.dischargeDate)}</span>
+            <div style="display:flex; align-items:center; gap:8px; flex-shrink:0;">
+              <span class="badge closed" style="background:#eef2f8; color:var(--primary);">📅 ${formatDate(e.dischargeDate)}</span>
+              <button class="btn-neutral btn-sm" onclick="openPersonModal('${e.personId}')">✎</button>
+            </div>
           </div>`).join('')}
       </div>`;
   }).join('');
@@ -1061,6 +1173,7 @@ function renderManageTab() {
     const sorted = [...state.activities].sort((a, b) => new Date(b.startDate) - new Date(a.startDate));
     ac.innerHTML = sorted.map(a => {
       const days = daysBetween(a.startDate, a.endDate);
+      const customCount = (a.participants || []).filter(partHasOverride).length;
       return `
         <div class="activity-row">
           <div class="activity-info">
@@ -1070,6 +1183,7 @@ function renderManageTab() {
               <span class="activity-meta-item">🔚 שחרור: ${formatDate(a.endDate)}</span>
               <span class="activity-meta-item">⏱️ ${days} ימים</span>
               <span class="activity-meta-item">👥 ${(a.participants || []).length} משתתפים</span>
+              ${customCount > 0 ? `<span class="activity-meta-item" style="color:var(--accent-dark); font-weight:600;">✎ ${customCount} בתאריך אישי</span>` : ''}
             </div>
           </div>
           <div class="activity-actions">
@@ -1089,12 +1203,16 @@ function renderManageTab() {
 function openActivityModal(id) {
   editingActivityId = id || null;
   document.getElementById('activityModalTitle').textContent = id ? 'ערוך פעילות' : 'הוסף פעילות חדשה';
+  pickerOverrides = {};
   if (id) {
     const a = state.activities.find(x => x.id === id);
     document.getElementById('activityName').value = a.name;
     document.getElementById('activityStart').value = a.startDate;
     document.getElementById('activityEnd').value = a.endDate;
-    pickerSelection = new Set(a.participants || []);
+    pickerSelection = new Set((a.participants || []).map(p => p.id));
+    (a.participants || []).forEach(p => {
+      if (p.startDate || p.endDate) pickerOverrides[p.id] = { startDate: p.startDate || '', endDate: p.endDate || '' };
+    });
   } else {
     document.getElementById('activityName').value = '';
     document.getElementById('activityStart').value = '';
@@ -1102,10 +1220,11 @@ function openActivityModal(id) {
     pickerSelection = new Set();
   }
   renderPicker();
+  renderOverrideList();
   updateDayPreview();
   document.getElementById('activityModal').classList.add('active');
-  document.getElementById('activityStart').oninput = updateDayPreview;
-  document.getElementById('activityEnd').oninput = updateDayPreview;
+  document.getElementById('activityStart').oninput = () => { updateDayPreview(); renderOverrideList(); };
+  document.getElementById('activityEnd').oninput = () => { updateDayPreview(); renderOverrideList(); };
 }
 function updateDayPreview() {
   const s = document.getElementById('activityStart').value;
@@ -1113,7 +1232,7 @@ function updateDayPreview() {
   const preview = document.getElementById('dayCountPreview');
   if (s && e) {
     const d = daysBetween(s, e);
-    if (d > 0) preview.innerHTML = `📊 משך הפעילות: <strong style="color:var(--primary);">${d} ימים</strong> · יום שחרור: <strong style="color:var(--primary);">${formatDate(e)}</strong>`;
+    if (d > 0) preview.innerHTML = `📊 משך הפעילות: <strong style="color:var(--primary);">${d} ימים</strong> · יום שחרור (ברירת מחדל לכולם): <strong style="color:var(--primary);">${formatDate(e)}</strong>`;
     else preview.innerHTML = '<span style="color:var(--danger);">⚠ תאריך סיום חייב להיות אחרי תאריך התחלה</span>';
   } else preview.textContent = '';
 }
@@ -1132,15 +1251,46 @@ function renderPicker(searchTerm = '') {
 }
 function updatePickerCount() { document.getElementById('pickerCount').textContent = `${pickerSelection.size} נבחרו`; }
 function filterPeoplePicker(term) { renderPicker(term); }
-function togglePickerPerson(id, checked) { if (checked) pickerSelection.add(id); else pickerSelection.delete(id); updatePickerCount(); }
+function togglePickerPerson(id, checked) { if (checked) pickerSelection.add(id); else { pickerSelection.delete(id); delete pickerOverrides[id]; } updatePickerCount(); renderOverrideList(); }
 function toggleAllPickerPeople(select) {
   document.querySelectorAll('#peoplePicker input[type="checkbox"]').forEach(cb => {
     const id = cb.dataset.id;
-    if (select) pickerSelection.add(id); else pickerSelection.delete(id);
+    if (select) pickerSelection.add(id); else { pickerSelection.delete(id); delete pickerOverrides[id]; }
     cb.checked = select;
   });
-  updatePickerCount();
+  updatePickerCount(); renderOverrideList();
 }
+// Per-person date overrides inside the activity modal (for setting custom dates as a group)
+function renderOverrideList() {
+  const wrap = document.getElementById('overrideList');
+  if (!wrap) return;
+  const defStart = document.getElementById('activityStart').value;
+  const defEnd = document.getElementById('activityEnd').value;
+  const ids = [...pickerSelection];
+  if (ids.length === 0) { wrap.innerHTML = '<div style="color:var(--text-muted); font-size:16px; font-style:italic; padding:6px 2px;">בחר משתתפים כדי להגדיר תאריך אישי לכל אחד.</div>'; return; }
+  const people = ids.map(id => state.people.find(p => p.id === id)).filter(Boolean).sort((a, b) => a.name.localeCompare(b.name, 'he'));
+  wrap.innerHTML = people.map(p => {
+    const ov = pickerOverrides[p.id] || {};
+    const has = !!(ov.startDate || ov.endDate);
+    const effEnd = ov.endDate || defEnd;
+    return `
+      <div class="override-row${has ? ' has-override' : ''}">
+        <div class="override-name">${escapeHtml(p.name)} ${has ? '<span style="color:var(--accent-dark); font-size:14px;">✎ אישי</span>' : ''}</div>
+        <div class="override-dates">
+          <label>התחלה<input type="date" value="${ov.startDate || ''}" onchange="setPickerOverride('${p.id}','startDate',this.value)"></label>
+          <label>שחרור<input type="date" value="${ov.endDate || ''}" onchange="setPickerOverride('${p.id}','endDate',this.value)"></label>
+          ${has ? `<button type="button" class="btn-neutral btn-sm" onclick="clearPickerOverride('${p.id}')">↺ ברירת מחדל</button>` : ''}
+        </div>
+      </div>`;
+  }).join('');
+}
+function setPickerOverride(id, field, value) {
+  if (!pickerOverrides[id]) pickerOverrides[id] = { startDate: '', endDate: '' };
+  pickerOverrides[id][field] = value;
+  if (!pickerOverrides[id].startDate && !pickerOverrides[id].endDate) delete pickerOverrides[id];
+  renderOverrideList();
+}
+function clearPickerOverride(id) { delete pickerOverrides[id]; renderOverrideList(); }
 function saveActivity() {
   const name = document.getElementById('activityName').value.trim();
   const startDate = document.getElementById('activityStart').value;
@@ -1149,11 +1299,26 @@ function saveActivity() {
   if (!startDate || !endDate) { alert('יש להזין תאריך התחלה ותאריך סיום'); return; }
   if (new Date(endDate) < new Date(startDate)) { alert('תאריך סיום חייב להיות אחרי תאריך התחלה'); return; }
   if (pickerSelection.size === 0) { if (!confirm('לא נבחרו משתתפים. לשמור בכל זאת?')) return; }
+  // Build participant objects with optional overrides; validate per-person ranges
+  const participants = [];
+  for (const id of pickerSelection) {
+    const ov = pickerOverrides[id] || {};
+    const p = { id };
+    if (ov.startDate) p.startDate = ov.startDate;
+    if (ov.endDate) p.endDate = ov.endDate;
+    const effS = p.startDate || startDate;
+    const effE = p.endDate || endDate;
+    if (new Date(effE) < new Date(effS)) {
+      alert(`תאריך אישי לא תקין עבור ${getPersonName(id)}: יום השחרור חייב להיות אחרי ההתחלה.`);
+      return;
+    }
+    participants.push(p);
+  }
   if (editingActivityId) {
     const a = state.activities.find(x => x.id === editingActivityId);
-    a.name = name; a.startDate = startDate; a.endDate = endDate; a.participants = [...pickerSelection];
+    a.name = name; a.startDate = startDate; a.endDate = endDate; a.participants = participants;
   } else {
-    state.activities.push({ id: uuid(), name, startDate, endDate, participants: [...pickerSelection] });
+    state.activities.push({ id: uuid(), name, startDate, endDate, participants });
   }
   saveState(); closeActivityModal(); render();
 }
@@ -1164,6 +1329,106 @@ function deleteActivity(id) {
   if (!confirm(`למחוק את הפעילות "${a.name}"?`)) return;
   state.activities = state.activities.filter(x => x.id !== id);
   saveState(); render();
+}
+
+// ===== Person Modal (individual editing across all activities) =====
+function openPersonModal(personId) {
+  currentPersonModalId = personId;
+  renderPersonModal();
+  document.getElementById('personModal').classList.add('active');
+}
+function closePersonModal() { document.getElementById('personModal').classList.remove('active'); currentPersonModalId = null; }
+function renderPersonModal() {
+  const personId = currentPersonModalId;
+  const person = state.people.find(p => p.id === personId);
+  if (!person) { closePersonModal(); return; }
+  document.getElementById('personModalTitle').textContent = `עריכה אישית - ${person.name}`;
+  document.getElementById('personModalSub').textContent = `מ.א. ${person.id}`;
+
+  const myActs = state.activities
+    .filter(a => activityHasPerson(a, personId))
+    .sort((a, b) => new Date(b.startDate) - new Date(a.startDate));
+
+  const rowsHTML = myActs.length === 0
+    ? '<div style="color:var(--text-muted); font-size:18px; font-style:italic; padding:8px 2px;">האדם לא משויך לאף פעילות. הוסף אותו לפעילות קיימת למטה.</div>'
+    : myActs.map(a => {
+        const part = getParticipant(a, personId);
+        const has = partHasOverride(part);
+        const effS = partStart(part, a), effE = partEnd(part, a);
+        const days = daysBetween(effS, effE);
+        return `
+          <div class="pm-act${has ? ' has-override' : ''}">
+            <div class="pm-act-head">
+              <div class="pm-act-name">${escapeHtml(a.name)} ${has ? '<span style="color:var(--accent-dark); font-size:15px;">✎ תאריך אישי</span>' : ''}</div>
+              <div class="pm-act-default">ברירת מחדל בשמ"פ: ${formatDate(a.startDate)} - ${formatDate(a.endDate)}</div>
+            </div>
+            <div class="pm-act-dates">
+              <label>התחלה<input type="date" value="${part.startDate || ''}" placeholder="${a.startDate}" onchange="setPersonOverride('${a.id}','startDate',this.value)"></label>
+              <label>יום שחרור<input type="date" value="${part.endDate || ''}" onchange="setPersonOverride('${a.id}','endDate',this.value)"></label>
+              <span class="pm-days">${days} ימים<br><span style="font-weight:400; color:var(--text-light); font-size:14px;">שחרור בפועל: ${formatDate(effE)}</span></span>
+            </div>
+            <div class="pm-act-actions">
+              ${has ? `<button class="btn-neutral btn-sm" onclick="resetPersonOverride('${a.id}')">↺ ברירת מחדל</button>` : ''}
+              <button class="btn-danger btn-sm" onclick="removePersonFromActivity('${a.id}')">הסר מהשמ"פ</button>
+            </div>
+          </div>`;
+      }).join('');
+
+  // Activities the person is NOT in (to add)
+  const notIn = state.activities.filter(a => !activityHasPerson(a, personId))
+    .sort((a, b) => new Date(b.startDate) - new Date(a.startDate));
+  const addHTML = notIn.length === 0 ? '' : `
+    <div class="pm-add">
+      <label style="font-size:17px; color:var(--text-light); display:block; margin-bottom:6px;">הוסף לשמ"פ / פעילות קיימת</label>
+      <div style="display:flex; gap:10px;">
+        <select id="pmAddSelect" style="flex:1;">
+          ${notIn.map(a => `<option value="${a.id}">${escapeHtml(a.name)} (${formatDate(a.startDate)} - ${formatDate(a.endDate)})</option>`).join('')}
+        </select>
+        <button class="btn-success" onclick="addPersonToActivity()">+ הוסף</button>
+      </div>
+    </div>`;
+
+  document.getElementById('personModalBody').innerHTML = rowsHTML + addHTML;
+}
+function setPersonOverride(activityId, field, value) {
+  const a = state.activities.find(x => x.id === activityId);
+  const part = getParticipant(a, currentPersonModalId);
+  if (!part) return;
+  if (value) part[field] = value; else delete part[field];
+  // Validate effective range
+  const effS = partStart(part, a), effE = partEnd(part, a);
+  if (new Date(effE) < new Date(effS)) {
+    alert('יום השחרור חייב להיות אחרי ההתחלה. השינוי בוטל.');
+    delete part[field];
+    renderPersonModal();
+    return;
+  }
+  saveState(); renderPersonModal(); render();
+}
+function resetPersonOverride(activityId) {
+  const a = state.activities.find(x => x.id === activityId);
+  const part = getParticipant(a, currentPersonModalId);
+  if (!part) return;
+  delete part.startDate; delete part.endDate;
+  saveState(); renderPersonModal(); render();
+}
+function removePersonFromActivity(activityId) {
+  const a = state.activities.find(x => x.id === activityId);
+  if (!a) return;
+  if (!confirm(`להסיר את ${getPersonName(currentPersonModalId)} מ"${a.name}"?`)) return;
+  a.participants = (a.participants || []).filter(p => p.id !== currentPersonModalId);
+  saveState(); renderPersonModal(); render();
+}
+function addPersonToActivity() {
+  const sel = document.getElementById('pmAddSelect');
+  if (!sel || !sel.value) return;
+  const a = state.activities.find(x => x.id === sel.value);
+  if (!a) return;
+  if (!activityHasPerson(a, currentPersonModalId)) {
+    a.participants = a.participants || [];
+    a.participants.push({ id: currentPersonModalId });
+  }
+  saveState(); renderPersonModal(); render();
 }
 
 // ===== Grant Modal =====
@@ -1295,7 +1560,7 @@ function closePeopleModal() { document.getElementById('peopleModal').classList.r
 function renderPeopleManager() {
   const sorted = [...state.people].sort((a, b) => a.name.localeCompare(b.name, 'he'));
   document.getElementById('peopleManagerList').innerHTML = sorted.map(p => {
-    const inActivities = state.activities.filter(a => (a.participants || []).includes(p.id)).length;
+    const inActivities = state.activities.filter(a => activityHasPerson(a, p.id)).length;
     const inGrants = state.grants.filter(g => g.personId === p.id).length;
     const extra = [];
     if (inActivities > 0) extra.push(`${inActivities} פעילויות`);
@@ -1325,7 +1590,7 @@ function addPerson() {
 function removePerson(id) {
   const p = state.people.find(x => x.id === id);
   if (!p) return;
-  const inActivities = state.activities.filter(a => (a.participants || []).includes(id)).length;
+  const inActivities = state.activities.filter(a => activityHasPerson(a, id)).length;
   const inGrants = state.grants.filter(g => g.personId === id).length;
   const parts = [];
   if (inActivities > 0) parts.push(`${inActivities} פעילויות`);
@@ -1333,7 +1598,7 @@ function removePerson(id) {
   const msg = parts.length > 0 ? `להסיר את ${p.name}? הוא רשום ב-${parts.join(' וב-')} ויוסר גם מהם.` : `להסיר את ${p.name}?`;
   if (!confirm(msg)) return;
   state.people = state.people.filter(x => x.id !== id);
-  state.activities.forEach(a => { a.participants = (a.participants || []).filter(x => x !== id); });
+  state.activities.forEach(a => { a.participants = (a.participants || []).filter(x => x.id !== id); });
   state.grants = state.grants.filter(g => g.personId !== id);
   saveState();
   renderPeopleManager(); render();
@@ -1355,6 +1620,12 @@ function normalizeImported(imported) {
   }
   if (!Array.isArray(imported.grantTypes)) imported.grantTypes = BUILTIN_GRANT_TYPES.map(t => ({ ...t }));
   if (!Array.isArray(imported.grants)) imported.grants = [];
+  imported.activities.forEach(a => {
+    if (!Array.isArray(a.participants)) { a.participants = []; return; }
+    a.participants = a.participants
+      .map(p => (typeof p === 'string') ? { id: p } : (p && p.id ? p : null))
+      .filter(Boolean);
+  });
   return imported;
 }
 function importData(event) {
@@ -1374,14 +1645,112 @@ function importData(event) {
 }
 
 // ===== Text Import/Export =====
-function openTextModal() { document.getElementById('textData').value = JSON.stringify(state, null, 2); document.getElementById('textModal').classList.add('active'); }
+// Two modes: 'readable' (human-friendly, for email/message) and 'json' (technical backup/restore)
+function openTextModal() { textMode = 'readable'; setTextMode('readable'); document.getElementById('textModal').classList.add('active'); }
 function closeTextModal() { document.getElementById('textModal').classList.remove('active'); }
+
+function setTextMode(mode) {
+  textMode = mode;
+  const readable = (mode === 'readable');
+  document.getElementById('textModeReadableBtn').classList.toggle('active', readable);
+  document.getElementById('textModeJsonBtn').classList.toggle('active', !readable);
+  document.getElementById('textReadableOpts').style.display = readable ? '' : 'none';
+  document.getElementById('textJsonHint').style.display = readable ? 'none' : '';
+  document.getElementById('btnLoadFile').style.display = readable ? 'none' : '';
+  document.getElementById('btnImport').style.display = readable ? 'none' : '';
+  document.getElementById('btnMail').style.display = readable ? '' : 'none';
+  document.getElementById('btnWhatsapp').style.display = readable ? '' : 'none';
+  const ta = document.getElementById('textData');
+  ta.style.direction = readable ? 'rtl' : 'ltr';
+  ta.style.textAlign = readable ? 'right' : 'left';
+  ta.style.fontFamily = readable ? "'Assistant', sans-serif" : "ui-monospace,'Courier New',monospace";
+  refreshTextData();
+}
+
+function refreshTextData() {
+  const ta = document.getElementById('textData');
+  if (textMode === 'json') { ta.value = JSON.stringify(state, null, 2); return; }
+  ta.value = buildReadableText({
+    ranking: document.getElementById('optRanking').checked,
+    activities: document.getElementById('optActivities').checked,
+    discharge: document.getElementById('optDischarge').checked,
+    grants: document.getElementById('optGrants').checked
+  });
+}
+
+// Build a clean plain-text report suitable for pasting into email / WhatsApp
+function buildReadableText(opts) {
+  const scope = { type: 'all' };
+  const L = [];
+  const allStats = state.people.map(p => ({ person: p, stats: personStatsInScope(p.id, scope) }));
+  const active = allStats.filter(s => s.stats.totalDays > 0)
+    .sort((a, b) => b.stats.totalDays - a.stats.totalDays || a.person.name.localeCompare(b.person.name, 'he'));
+  const grand = active.reduce((s, p) => s + p.stats.totalDays, 0);
+
+  L.push('דוח מעקב ימי מילואים');
+  L.push('כל הזמנים · הופק ' + new Date().toLocaleDateString('he-IL'));
+  L.push('');
+  L.push('== סיכום ==');
+  L.push(`אנשים פעילים: ${active.length} מתוך ${state.people.length}`);
+  L.push(`סך פעילויות: ${state.activities.length}`);
+  L.push(`סך ימי-אדם: ${grand}`);
+  L.push(`ממוצע ימים לאיש פעיל: ${active.length ? (grand / active.length).toFixed(1) : 0}`);
+  L.push(`סך מענקים: ${state.grants.length}`);
+  L.push('');
+
+  if (opts.ranking) {
+    L.push('== דירוג אנשים (לפי ימים) ==');
+    active.forEach((s, i) => L.push(`${i + 1}. ${s.person.name} (${s.person.id}) - ${s.stats.totalDays} ימים, ${s.stats.activities.length} זימונים`));
+    const zero = allStats.length - active.length;
+    if (zero > 0) L.push(`(${zero} אנשים ללא ימים בתקופה)`);
+    L.push('');
+  }
+
+  if (opts.activities) {
+    L.push('== פעילויות / שמ"פ ==');
+    [...state.activities].sort((a, b) => new Date(b.startDate) - new Date(a.startDate)).forEach(a => {
+      const cust = (a.participants || []).filter(partHasOverride).length;
+      L.push(`- ${a.name}: ${formatDate(a.startDate)} - ${formatDate(a.endDate)} (${daysBetween(a.startDate, a.endDate)} ימים, ${(a.participants || []).length} משתתפים${cust ? `, ${cust} בתאריך אישי` : ''})`);
+    });
+    L.push('');
+  }
+
+  if (opts.discharge) {
+    L.push('== סגירת שמ"פ לפי חודש - מי משתחרר ומתי ==');
+    const ev = getDischargeEvents();
+    const byMonth = {};
+    ev.forEach(e => { const dt = new Date(e.dischargeDate + 'T00:00:00'); const k = `${dt.getFullYear()}-${String(dt.getMonth()).padStart(2, '0')}`; (byMonth[k] = byMonth[k] || []).push(e); });
+    const keys = Object.keys(byMonth).sort();
+    if (keys.length === 0) L.push('(אין נתוני שחרור)');
+    keys.forEach(k => {
+      const [y, m] = k.split('-').map(Number);
+      L.push(`${MONTH_NAMES[m]} ${y}:`);
+      byMonth[k].sort((a, b) => a.dischargeDate.localeCompare(b.dischargeDate) || a.personName.localeCompare(b.personName, 'he'))
+        .forEach(e => L.push(`  ${formatDate(e.dischargeDate)} - ${e.personName} (${e.activityName})${e.override ? ' [תאריך אישי]' : ''}`));
+    });
+    L.push('');
+  }
+
+  if (opts.grants && state.grants.length) {
+    L.push('== מענקים ==');
+    state.grantTypes.forEach(t => {
+      const g = state.grants.filter(x => x.typeId === t.id).sort((a, b) => new Date(b.date) - new Date(a.date));
+      if (!g.length) return;
+      L.push(`${t.name}:`);
+      g.forEach(x => L.push(`  - ${getPersonName(x.personId)} (${x.personId}) - ${formatDate(x.date)}${x.note ? ' · ' + x.note : ''}`));
+    });
+    L.push('');
+  }
+
+  return L.join('\n').trim();
+}
+
 function copyTextData() {
   const ta = document.getElementById('textData');
   ta.select();
   if (navigator.clipboard && navigator.clipboard.writeText) {
     navigator.clipboard.writeText(ta.value).then(
-      () => alert('הטקסט הועתק ללוח'),
+      () => alert('הטקסט הועתק ללוח. אפשר להדביק במייל / הודעה.'),
       () => { try { document.execCommand('copy'); alert('הטקסט הועתק'); } catch(e) { alert('העתקה נכשלה - סמן והעתק ידנית'); } }
     );
   } else {
@@ -1389,21 +1758,37 @@ function copyTextData() {
   }
 }
 function downloadTextData() {
-  const blob = new Blob([document.getElementById('textData').value], { type: 'text/plain;charset=utf-8' });
+  const isJson = textMode === 'json';
+  const blob = new Blob([document.getElementById('textData').value], { type: isJson ? 'application/json;charset=utf-8' : 'text/plain;charset=utf-8' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
-  a.href = url; a.download = `miluim_data_${todayStr()}.txt`; a.click();
+  a.href = url;
+  a.download = isJson ? `miluim_backup_${todayStr()}.json` : `דוח_מילואים_${todayStr()}.txt`;
+  a.click();
   URL.revokeObjectURL(url);
+}
+function sendAsEmail() {
+  const body = document.getElementById('textData').value;
+  const subject = 'דוח מעקב ימי מילואים - ' + new Date().toLocaleDateString('he-IL');
+  if (body.length > 1800) {
+    if (!confirm('הטקסט ארוך וייתכן שייחתך בחלק מתוכנות המייל. עדיף ללחוץ "העתק" ולהדביק. לפתוח מייל בכל זאת?')) return;
+  }
+  window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+}
+function sendAsWhatsapp() {
+  const body = document.getElementById('textData').value;
+  window.open('https://wa.me/?text=' + encodeURIComponent(body), '_blank');
 }
 function loadTextFile(event) {
   const file = event.target.files[0];
   if (!file) return;
   const reader = new FileReader();
-  reader.onload = e => { document.getElementById('textData').value = e.target.result; };
+  reader.onload = e => { setTextMode('json'); document.getElementById('textData').value = e.target.result; };
   reader.readAsText(file);
   event.target.value = '';
 }
 function importFromText() {
+  if (textMode !== 'json') { alert('ייבוא אפשרי רק במצב "גיבוי טכני (JSON)". עבור ללשונית הגיבוי כדי לשחזר נתונים.'); return; }
   const text = document.getElementById('textData').value.trim();
   if (!text) { alert('אין טקסט לייבוא'); return; }
   let imported;
@@ -1447,18 +1832,22 @@ async function exportToExcel() {
         'מס׳ זימונים': stats.activities.length,
         'מס׳ מענקים': grants.length,
         'אחוז מהסך': grandTotalDays > 0 ? +((stats.totalDays / grandTotalDays) * 100).toFixed(2) : 0,
-        'פעילויות': stats.activities.map(a => `${a.name} (${daysBetween(a.startDate, a.endDate)}י׳)`).join(' | '),
+        'פעילויות': stats.activities.map(it => `${it.activity.name} (${it.days}י׳, שחרור ${formatDate(it.end)})`).join(' | '),
         'מענקים': grants.map(g => `${getGrantTypeName(g.typeId)} (${formatDate(g.date)})`).join(' | ')
       }));
 
     const activitiesData = [...acts].sort((a, b) => new Date(b.startDate) - new Date(a.startDate)).map(a => {
-      const participants = (a.participants || []).map(pid => getPersonName(pid)).join(', ');
+      const participants = (a.participants || []).map(part => {
+        const nm = getPersonName(part.id);
+        return partHasOverride(part) ? `${nm} (שחרור אישי ${formatDate(partEnd(part, a))})` : nm;
+      }).join(', ');
       return {
         'שם הפעילות': a.name,
         'מתאריך': formatDate(a.startDate),
         'עד תאריך (שחרור)': formatDate(a.endDate),
         'משך (ימים)': daysBetween(a.startDate, a.endDate),
         'מס׳ משתתפים': (a.participants || []).length,
+        'בתאריך אישי': (a.participants || []).filter(partHasOverride).length,
         'משתתפים': participants
       };
     });
@@ -1472,7 +1861,8 @@ async function exportToExcel() {
         'שם': e.personName,
         'מ.א.': e.personId,
         'פעילות': e.activityName,
-        'ימים': e.days
+        'ימים': e.days,
+        'תאריך אישי': e.override ? 'כן' : ''
       }));
 
     const grantsData = [...state.grants].sort((a, b) => {
@@ -1496,8 +1886,8 @@ async function exportToExcel() {
     wb.Workbook = { Views: [{ RTL: true }] };
     const add = (data, name, cols) => { const ws = XLSX.utils.json_to_sheet(data.length ? data : [{}]); if (cols) ws['!cols'] = cols; XLSX.utils.book_append_sheet(wb, ws, name); };
     add(peopleSummary, 'סיכום אנשים', [{wch:8},{wch:25},{wch:12},{wch:10},{wch:14},{wch:12},{wch:12},{wch:55},{wch:45}]);
-    add(activitiesData, 'פעילויות', [{wch:30},{wch:14},{wch:16},{wch:12},{wch:14},{wch:80}]);
-    add(discharge, 'סגירת שמפ', [{wch:14},{wch:18},{wch:25},{wch:12},{wch:30},{wch:10}]);
+    add(activitiesData, 'פעילויות', [{wch:30},{wch:14},{wch:16},{wch:12},{wch:14},{wch:12},{wch:80}]);
+    add(discharge, 'סגירת שמפ', [{wch:14},{wch:18},{wch:25},{wch:12},{wch:30},{wch:10},{wch:12}]);
     add(grantsData, 'מענקים', [{wch:24},{wch:25},{wch:12},{wch:14},{wch:35}]);
     add(meta, 'מידע', [{wch:25},{wch:35}]);
 
@@ -1617,7 +2007,7 @@ function exportToReport() {
     const list = byMonth[key].sort((a, b) => a.dischargeDate.localeCompare(b.dischargeDate) || a.personName.localeCompare(b.personName, 'he'));
     return `<h3>${MONTH_NAMES[m]} ${y} (${list.length} שחרורים)</h3>
     <table><thead><tr><th>יום שחרור</th><th>שם</th><th>מ.א.</th><th>פעילות</th><th class="num-cell">ימים</th></tr></thead><tbody>
-    ${list.map(e => `<tr><td>${formatDate(e.dischargeDate)}</td><td>${escapeHtml(e.personName)}</td><td>${e.personId}</td><td>${escapeHtml(e.activityName)}</td><td class="num-cell">${e.days}</td></tr>`).join('')}
+    ${list.map(e => `<tr><td>${formatDate(e.dischargeDate)}${e.override ? ' ✎' : ''}</td><td>${escapeHtml(e.personName)}</td><td>${e.personId}</td><td>${escapeHtml(e.activityName)}</td><td class="num-cell">${e.days}</td></tr>`).join('')}
     </tbody></table>`;
   }).join('')}` : ''}
   ${sortedGrants.length > 0 ? `
@@ -1638,6 +2028,7 @@ function closeAllModals() {
   document.querySelectorAll('.modal-overlay.active').forEach(o => o.classList.remove('active'));
   editingActivityId = null;
   editingGrantId = null;
+  currentPersonModalId = null;
 }
 document.querySelectorAll('.modal-overlay').forEach(overlay => {
   overlay.addEventListener('click', e => { if (e.target === overlay) closeAllModals(); });
