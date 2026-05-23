@@ -33,17 +33,15 @@
     --shadow: 0 4px 12px rgba(26,41,66,0.08), 0 2px 4px rgba(26,41,66,0.04);
     --shadow-lg: 0 12px 32px rgba(26,41,66,0.12), 0 4px 8px rgba(26,41,66,0.06);
   }
-  
+
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  
   html { scroll-behavior: smooth; }
-  
+
   body {
     font-family: 'Assistant', sans-serif;
     font-size: 22px;
     background: var(--bg);
-    background-image: 
-      radial-gradient(circle at 1px 1px, var(--bg-pattern) 1px, transparent 0);
+    background-image: radial-gradient(circle at 1px 1px, var(--bg-pattern) 1px, transparent 0);
     background-size: 24px 24px;
     color: var(--text);
     line-height: 1.55;
@@ -51,21 +49,20 @@
     padding: 28px 24px;
     font-weight: 400;
   }
-  
+
   .container { max-width: 1500px; margin: 0 auto; }
-  
+
   /* Header */
   header {
     background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 60%, var(--primary-light) 100%);
     color: white;
     padding: 36px 44px;
     border-radius: 18px;
-    margin-bottom: 28px;
+    margin-bottom: 24px;
     box-shadow: var(--shadow-lg);
     position: relative;
     overflow: hidden;
   }
-  
   header::before {
     content: '';
     position: absolute;
@@ -76,45 +73,15 @@
     transform: translate(40%, -40%);
     pointer-events: none;
   }
-  
-  .header-content {
-    position: relative;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 20px;
-  }
-  
+  .header-content { position: relative; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; }
   .header-title { display: flex; flex-direction: column; gap: 4px; }
-  
-  h1 {
-    font-family: 'Frank Ruhl Libre', serif;
-    font-size: 42px;
-    font-weight: 700;
-    letter-spacing: -0.5px;
-    line-height: 1.1;
-  }
-  
-  .header-subtitle {
-    font-size: 20px;
-    color: var(--accent-light);
-    font-weight: 400;
-    letter-spacing: 0.5px;
-  }
-  
-  h2 {
-    font-family: 'Frank Ruhl Libre', serif;
-    font-size: 28px;
-    font-weight: 500;
-    color: var(--primary);
-    letter-spacing: -0.3px;
-  }
-  
+
+  h1 { font-family: 'Frank Ruhl Libre', serif; font-size: 42px; font-weight: 700; letter-spacing: -0.5px; line-height: 1.1; }
+  .header-subtitle { font-size: 20px; color: var(--accent-light); font-weight: 400; letter-spacing: 0.5px; }
+  h2 { font-family: 'Frank Ruhl Libre', serif; font-size: 28px; font-weight: 500; color: var(--primary); letter-spacing: -0.3px; }
   h3 { font-size: 22px; font-weight: 600; color: var(--primary); }
-  
   .header-actions { display: flex; gap: 10px; flex-wrap: wrap; }
-  
+
   /* Buttons */
   button {
     font-family: 'Assistant', sans-serif;
@@ -127,22 +94,10 @@
     transition: all 0.18s ease;
     white-space: nowrap;
   }
-  
-  .btn-primary {
-    background: var(--accent);
-    color: var(--primary-dark);
-    box-shadow: 0 2px 6px rgba(184,151,90,0.3);
-  }
+  .btn-primary { background: var(--accent); color: var(--primary-dark); box-shadow: 0 2px 6px rgba(184,151,90,0.3); }
   .btn-primary:hover { background: var(--accent-light); transform: translateY(-1px); box-shadow: 0 4px 10px rgba(184,151,90,0.4); }
-  
-  .btn-secondary {
-    background: rgba(255,255,255,0.12);
-    color: white;
-    border: 1px solid rgba(255,255,255,0.25);
-    backdrop-filter: blur(8px);
-  }
+  .btn-secondary { background: rgba(255,255,255,0.12); color: white; border: 1px solid rgba(255,255,255,0.25); backdrop-filter: blur(8px); }
   .btn-secondary:hover { background: rgba(255,255,255,0.22); border-color: rgba(255,255,255,0.4); }
-  
   .btn-danger { background: var(--danger); color: white; }
   .btn-danger:hover { background: #9c2f2c; }
   .btn-success { background: var(--success); color: white; }
@@ -150,431 +105,161 @@
   .btn-neutral { background: #e8e3d8; color: var(--text); }
   .btn-neutral:hover { background: #d8d2c5; }
   .btn-sm { font-size: 16px; padding: 7px 14px; }
-  
-  /* Stats Grid */
-  .stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 16px;
-    margin-bottom: 28px;
-  }
-  
-  .stat-card {
-    background: var(--card);
-    padding: 22px 26px;
-    border-radius: 14px;
-    box-shadow: var(--shadow-sm);
-    border-right: 4px solid var(--accent);
-    position: relative;
-    overflow: hidden;
-    transition: transform 0.2s;
-  }
-  
-  .stat-card:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
-  
-  .stat-label {
-    font-size: 17px;
-    color: var(--text-light);
-    margin-bottom: 6px;
-    font-weight: 500;
-    letter-spacing: 0.2px;
-  }
-  
-  .stat-value {
-    font-family: 'Frank Ruhl Libre', serif;
-    font-size: 38px;
-    font-weight: 700;
-    color: var(--primary);
-    line-height: 1;
-  }
-  
-  .stat-unit {
-    font-family: 'Assistant', sans-serif;
-    font-size: 17px;
-    color: var(--text-muted);
-    font-weight: 400;
-    margin-right: 4px;
-  }
-  
-  /* Panels */
-  .panel {
-    background: var(--card);
-    padding: 28px 32px;
-    border-radius: 16px;
-    box-shadow: var(--shadow-sm);
+
+  /* Tabs */
+  .tabs {
+    display: flex; gap: 6px; flex-wrap: wrap;
+    background: var(--card); padding: 8px; border-radius: 14px;
+    box-shadow: var(--shadow-sm); border: 1px solid var(--border-light);
     margin-bottom: 24px;
-    border: 1px solid var(--border-light);
   }
-  
-  .panel-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    padding-bottom: 14px;
-    border-bottom: 2px solid var(--border-light);
-    flex-wrap: wrap;
-    gap: 12px;
-  }
-  
+  .tab-btn { background: transparent; color: var(--text-light); font-weight: 600; font-size: 19px; padding: 12px 22px; border-radius: 10px; }
+  .tab-btn:hover { background: var(--bg); color: var(--primary); }
+  .tab-btn.active { background: var(--primary); color: white; box-shadow: 0 2px 8px rgba(26,41,66,0.25); }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; animation: fadeIn 0.2s ease; }
+
+  /* Stats Grid */
+  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 24px; }
+  .stat-card { background: var(--card); padding: 22px 26px; border-radius: 14px; box-shadow: var(--shadow-sm); border-right: 4px solid var(--accent); position: relative; overflow: hidden; transition: transform 0.2s; }
+  .stat-card:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+  .stat-card.grant-stat { border-right-color: var(--gold); }
+  .stat-label { font-size: 17px; color: var(--text-light); margin-bottom: 6px; font-weight: 500; letter-spacing: 0.2px; }
+  .stat-value { font-family: 'Frank Ruhl Libre', serif; font-size: 38px; font-weight: 700; color: var(--primary); line-height: 1; }
+  .stat-unit { font-family: 'Assistant', sans-serif; font-size: 17px; color: var(--text-muted); font-weight: 400; margin-right: 4px; }
+
+  /* Panels */
+  .panel { background: var(--card); padding: 28px 32px; border-radius: 16px; box-shadow: var(--shadow-sm); margin-bottom: 24px; border: 1px solid var(--border-light); }
+  .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 14px; border-bottom: 2px solid var(--border-light); flex-wrap: wrap; gap: 12px; }
   .panel-header h2 { margin: 0; }
-  
-  /* Filters */
-  .filters {
-    display: flex;
-    gap: 16px;
-    align-items: flex-end;
-    flex-wrap: wrap;
-  }
-  
-  .filter-group { display: flex; flex-direction: column; gap: 6px; min-width: 160px; }
-  
-  .filter-group label {
-    font-size: 16px;
-    color: var(--text-light);
-    font-weight: 500;
-    letter-spacing: 0.2px;
-  }
-  
+
+  /* Controls bar (per-tab) */
+  .controls { display: flex; gap: 16px; align-items: flex-end; flex-wrap: wrap; margin-bottom: 22px; }
+  .control-group { display: flex; flex-direction: column; gap: 6px; min-width: 150px; }
+  .control-group label { font-size: 16px; color: var(--text-light); font-weight: 500; }
+  .check-inline { display: flex; align-items: center; gap: 8px; font-size: 18px; color: var(--text); cursor: pointer; padding-bottom: 11px; }
+  .check-inline input { width: 20px; height: 20px; accent-color: var(--accent); cursor: pointer; }
+
   select, input[type="text"], input[type="date"], input[type="number"] {
-    font-family: 'Assistant', sans-serif;
-    font-size: 19px;
-    padding: 11px 14px;
-    border: 1.5px solid var(--border);
-    border-radius: 9px;
-    background: white;
-    color: var(--text);
-    transition: border-color 0.18s;
+    font-family: 'Assistant', sans-serif; font-size: 19px; padding: 11px 14px;
+    border: 1.5px solid var(--border); border-radius: 9px; background: white; color: var(--text); transition: border-color 0.18s;
   }
-  
-  select:focus, input:focus {
-    outline: none;
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(184,151,90,0.15);
-  }
-  
+  select:focus, input:focus, textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(184,151,90,0.15); }
+
   /* Top Performers */
-  .performers-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 14px;
-  }
-  
-  .performer {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    padding: 16px 20px;
-    background: linear-gradient(to left, #faf6ec, #fffdf6);
-    border-radius: 12px;
-    border-right: 4px solid var(--accent);
-    transition: all 0.2s;
-  }
-  
+  .performers-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 14px; }
+  .performer { display: flex; align-items: center; gap: 16px; padding: 16px 20px; background: linear-gradient(to left, #faf6ec, #fffdf6); border-radius: 12px; border-right: 4px solid var(--accent); transition: all 0.2s; }
   .performer:hover { transform: translateX(-3px); box-shadow: var(--shadow); }
-  
   .performer.rank-1 { background: linear-gradient(to left, #fdf4d4, #fffbeb); border-right-color: var(--gold); }
   .performer.rank-2 { background: linear-gradient(to left, #f0f2f5, #fafbfc); border-right-color: var(--silver); }
   .performer.rank-3 { background: linear-gradient(to left, #fbe9d8, #fdf6ee); border-right-color: var(--bronze); }
-  
-  .performer-rank {
-    background: var(--accent);
-    color: white;
-    width: 40px; height: 40px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
-    font-size: 19px;
-    font-family: 'Frank Ruhl Libre', serif;
-    flex-shrink: 0;
-    box-shadow: 0 2px 6px rgba(184,151,90,0.3);
-  }
-  
+  .performer-rank { background: var(--accent); color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 19px; font-family: 'Frank Ruhl Libre', serif; flex-shrink: 0; box-shadow: 0 2px 6px rgba(184,151,90,0.3); }
   .performer.rank-1 .performer-rank { background: var(--gold); color: var(--primary-dark); }
   .performer.rank-2 .performer-rank { background: var(--silver); color: var(--primary-dark); }
   .performer.rank-3 .performer-rank { background: var(--bronze); }
-  
   .performer-info { flex: 1; min-width: 0; }
-  
-  .performer-name {
-    font-weight: 600;
-    font-size: 21px;
-    color: var(--primary);
-    margin-bottom: 4px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  
-  .performer-stats {
-    font-size: 16px;
-    color: var(--text-light);
-    margin-bottom: 6px;
-  }
-  
+  .performer-name { font-weight: 600; font-size: 21px; color: var(--primary); margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .performer-stats { font-size: 16px; color: var(--text-light); margin-bottom: 6px; }
   .performer-stats strong { color: var(--primary); font-weight: 600; }
-  
-  .percentage-bar {
-    height: 7px;
-    background: rgba(0,0,0,0.06);
-    border-radius: 4px;
-    overflow: hidden;
-  }
-  
-  .percentage-fill {
-    height: 100%;
-    background: linear-gradient(to left, var(--accent), var(--accent-light));
-    transition: width 0.6s cubic-bezier(0.4,0,0.2,1);
-    border-radius: 4px;
-  }
-  
+  .percentage-bar { height: 7px; background: rgba(0,0,0,0.06); border-radius: 4px; overflow: hidden; }
+  .percentage-fill { height: 100%; background: linear-gradient(to left, var(--accent), var(--accent-light)); transition: width 0.6s cubic-bezier(0.4,0,0.2,1); border-radius: 4px; }
   .performer.rank-1 .percentage-fill { background: linear-gradient(to left, var(--gold), #f0d870); }
   .performer.rank-2 .percentage-fill { background: linear-gradient(to left, var(--silver), #d8dce4); }
   .performer.rank-3 .percentage-fill { background: linear-gradient(to left, var(--bronze), #e09850); }
-  
+
   /* Activities */
-  .activity-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 16px 20px;
-    border: 1.5px solid var(--border-light);
-    border-radius: 12px;
-    margin-bottom: 10px;
-    background: #fdfcf8;
-    transition: all 0.18s;
-  }
-  
-  .activity-row:hover {
-    border-color: var(--accent);
-    background: white;
-    box-shadow: var(--shadow-sm);
-  }
-  
+  .activity-row { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border: 1.5px solid var(--border-light); border-radius: 12px; margin-bottom: 10px; background: #fdfcf8; transition: all 0.18s; }
+  .activity-row:hover { border-color: var(--accent); background: white; box-shadow: var(--shadow-sm); }
   .activity-info { flex: 1; min-width: 0; }
-  
-  .activity-name {
-    font-weight: 600;
-    font-size: 21px;
-    color: var(--primary);
-    margin-bottom: 4px;
-  }
-  
-  .activity-meta {
-    font-size: 17px;
-    color: var(--text-light);
-    display: flex;
-    gap: 18px;
-    flex-wrap: wrap;
-  }
-  
+  .activity-name { font-weight: 600; font-size: 21px; color: var(--primary); margin-bottom: 4px; }
+  .activity-meta { font-size: 17px; color: var(--text-light); display: flex; gap: 18px; flex-wrap: wrap; }
   .activity-meta-item { display: inline-flex; align-items: center; gap: 5px; }
-  
   .activity-actions { display: flex; gap: 8px; flex-shrink: 0; }
-  
+
+  /* Discharge groups (by date / by month) */
+  .group { margin-bottom: 18px; }
+  .group-header { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; background: linear-gradient(to left, #f1ece0, #fbf8f1); padding: 11px 18px; border-radius: 10px; border-right: 4px solid var(--accent); margin-bottom: 8px; }
+  .group-header .g-title { font-family: 'Frank Ruhl Libre', serif; font-size: 23px; font-weight: 700; color: var(--primary); }
+  .group-header .g-meta { font-size: 16px; color: var(--text-light); }
+  .month-group .group-header { border-right-color: var(--primary); background: linear-gradient(to left, #e9edf3, #f8fafc); }
+  .discharge-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 11px 18px; border: 1.5px solid var(--border-light); border-radius: 10px; margin-bottom: 6px; background: #fff; transition: all 0.15s; }
+  .discharge-row:hover { border-color: var(--accent); box-shadow: var(--shadow-sm); }
+  .discharge-info { min-width: 0; }
+  .discharge-who { font-weight: 600; font-size: 19px; color: var(--primary); }
+  .discharge-what { font-size: 16px; color: var(--text-light); }
+  .badge { font-size: 14px; padding: 4px 11px; border-radius: 20px; font-weight: 600; white-space: nowrap; flex-shrink: 0; }
+  .badge.open { background: #e6f2ec; color: var(--success); }
+  .badge.closed { background: #f0eee9; color: var(--text-muted); }
+  .badge.today { background: #fdf0d8; color: var(--warning); }
+
+  /* Grants */
+  .grant-type-block { margin-bottom: 18px; padding-bottom: 16px; border-bottom: 1.5px dashed var(--border); }
+  .grant-type-block:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .grant-type-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 10px; }
+  .grant-type-header h3 { font-family: 'Frank Ruhl Libre', serif; font-size: 24px; font-weight: 700; }
+  .grant-type-count { color: var(--text-muted); font-weight: 400; font-size: 19px; font-family: 'Assistant', sans-serif; }
+  .grant-row { display: flex; justify-content: space-between; align-items: center; padding: 13px 18px; border: 1.5px solid var(--border-light); border-radius: 10px; margin-bottom: 8px; background: #fdfcf8; transition: all 0.18s; }
+  .grant-row:hover { border-color: var(--accent); background: white; box-shadow: var(--shadow-sm); }
+  .grant-info { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+  .grant-person { font-weight: 600; font-size: 20px; color: var(--primary); }
+  .grant-meta { font-size: 16px; color: var(--text-light); }
+  .person-grants { margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--border-light); }
+  .grant-tag { display: inline-block; background: #f7f0e0; color: var(--accent-dark); padding: 5px 12px; border-radius: 8px; margin: 4px 0 4px 4px; font-size: 16px; border: 1px solid #ecdfc4; }
+
   /* People */
-  .people-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
-    gap: 16px;
-  }
-  
-  .person-card {
-    background: var(--card);
-    border: 1.5px solid var(--border-light);
-    border-radius: 14px;
-    padding: 20px 22px;
-    transition: all 0.2s;
-  }
-  
-  .person-card:hover {
-    box-shadow: var(--shadow);
-    transform: translateY(-2px);
-    border-color: var(--border);
-  }
-  
+  .people-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 16px; }
+  .person-card { background: var(--card); border: 1.5px solid var(--border-light); border-radius: 14px; padding: 20px 22px; transition: all 0.2s; }
+  .person-card:hover { box-shadow: var(--shadow); transform: translateY(-2px); border-color: var(--border); }
   .person-card.active { border-right: 4px solid var(--accent); }
   .person-card.top-3 { border-right: 4px solid var(--gold); background: linear-gradient(to left, #fffdf5, white); }
-  
-  .person-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 14px;
-    padding-bottom: 12px;
-    border-bottom: 1.5px solid var(--border-light);
-    gap: 12px;
-  }
-  
-  .person-name {
-    font-size: 22px;
-    font-weight: 600;
-    color: var(--primary);
-    line-height: 1.2;
-  }
-  
-  .person-id {
-    font-size: 16px;
-    color: var(--text-muted);
-    margin-top: 3px;
-    font-feature-settings: "tnum";
-  }
-  
-  .person-days {
-    background: var(--primary);
-    color: white;
-    padding: 5px 14px;
-    border-radius: 22px;
-    font-size: 18px;
-    font-weight: 600;
-    white-space: nowrap;
-    box-shadow: 0 2px 6px rgba(26,41,66,0.2);
-  }
-  
+  .person-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1.5px solid var(--border-light); gap: 12px; }
+  .person-name { font-size: 22px; font-weight: 600; color: var(--primary); line-height: 1.2; }
+  .person-id { font-size: 16px; color: var(--text-muted); margin-top: 3px; font-feature-settings: "tnum"; }
+  .person-days { background: var(--primary); color: white; padding: 5px 14px; border-radius: 22px; font-size: 18px; font-weight: 600; white-space: nowrap; box-shadow: 0 2px 6px rgba(26,41,66,0.2); }
   .person-days.zero { background: #c8c4ba; color: var(--primary-dark); }
   .person-days.high { background: var(--accent); color: var(--primary-dark); }
-  
   .activities-list { margin-top: 8px; }
-  
-  .activity-tag {
-    display: inline-block;
-    background: #eef2f8;
-    color: var(--primary);
-    padding: 5px 12px;
-    border-radius: 8px;
-    margin: 4px 0 4px 4px;
-    font-size: 17px;
-    border: 1px solid #dde4ed;
-    transition: all 0.15s;
-  }
-  
+  .activity-tag { display: inline-block; background: #eef2f8; color: var(--primary); padding: 5px 12px; border-radius: 8px; margin: 4px 0 4px 4px; font-size: 17px; border: 1px solid #dde4ed; transition: all 0.15s; }
   .activity-tag:hover { background: #e3eaf3; }
-  
+
   /* Modal */
-  .modal-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(15,26,46,0.55);
-    backdrop-filter: blur(4px);
-    display: none;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-    padding: 20px;
-  }
-  
-  .modal-overlay.active {
-    display: flex;
-    animation: fadeIn 0.18s ease;
-  }
-  
+  .modal-overlay { position: fixed; inset: 0; background: rgba(15,26,46,0.55); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 20px; }
+  .modal-overlay.active { display: flex; animation: fadeIn 0.18s ease; }
   @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-  
-  .modal {
-    background: white;
-    border-radius: 18px;
-    padding: 32px 36px;
-    max-width: 720px;
-    width: 100%;
-    max-height: 92vh;
-    overflow-y: auto;
-    box-shadow: var(--shadow-lg);
-    animation: slideUp 0.22s cubic-bezier(0.4,0,0.2,1);
-  }
-  
+  .modal { background: white; border-radius: 18px; padding: 32px 36px; max-width: 720px; width: 100%; max-height: 92vh; overflow-y: auto; box-shadow: var(--shadow-lg); animation: slideUp 0.22s cubic-bezier(0.4,0,0.2,1); }
   @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-  
   .modal h2 { margin-bottom: 22px; padding-bottom: 14px; border-bottom: 2px solid var(--border-light); }
-  
   .form-group { margin-bottom: 18px; }
-  
-  .form-group label {
-    display: block;
-    margin-bottom: 7px;
-    font-size: 18px;
-    font-weight: 500;
-    color: var(--text);
-  }
-  
+  .form-group label { display: block; margin-bottom: 7px; font-size: 18px; font-weight: 500; color: var(--text); }
   .form-group input, .form-group select { width: 100%; }
-  
   .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-  
-  .people-picker {
-    max-height: 320px;
-    overflow-y: auto;
-    border: 1.5px solid var(--border);
-    border-radius: 10px;
-    padding: 6px;
-    background: #fafaf6;
-  }
-  
+  .people-picker { max-height: 320px; overflow-y: auto; border: 1.5px solid var(--border); border-radius: 10px; padding: 6px; background: #fafaf6; }
   .people-picker::-webkit-scrollbar { width: 8px; }
   .people-picker::-webkit-scrollbar-track { background: transparent; }
   .people-picker::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
-  
-  .person-checkbox {
-    display: flex;
-    align-items: center;
-    padding: 9px 12px;
-    gap: 12px;
-    cursor: pointer;
-    border-radius: 7px;
-    font-size: 19px;
-    transition: background 0.12s;
-  }
-  
+  .person-checkbox { display: flex; align-items: center; padding: 9px 12px; gap: 12px; cursor: pointer; border-radius: 7px; font-size: 19px; transition: background 0.12s; }
   .person-checkbox:hover { background: white; }
   .person-checkbox input { width: 20px; height: 20px; cursor: pointer; accent-color: var(--accent); }
   .person-checkbox .id-label { color: var(--text-muted); font-size: 16px; font-feature-settings: "tnum"; }
-  
   .picker-toolbar { display: flex; gap: 8px; margin-bottom: 8px; align-items: center; flex-wrap: wrap; }
   .picker-count { margin-right: auto; font-size: 17px; color: var(--text-light); }
-  
-  .modal-actions {
-    display: flex;
-    gap: 12px;
-    justify-content: flex-end;
-    margin-top: 28px;
-    padding-top: 18px;
-    border-top: 2px solid var(--border-light);
-  }
-  
+  .modal-actions { display: flex; gap: 12px; justify-content: flex-end; margin-top: 28px; padding-top: 18px; border-top: 2px solid var(--border-light); }
+
   /* Empty State */
-  .empty-state {
-    text-align: center;
-    padding: 50px 20px;
-    color: var(--text-light);
-    font-size: 19px;
-  }
-  
+  .empty-state { text-align: center; padding: 50px 20px; color: var(--text-light); font-size: 19px; }
   .empty-state-icon { font-size: 48px; margin-bottom: 12px; opacity: 0.5; }
-  
-  /* Search */
+
   .search-wrapper { position: relative; flex: 1; min-width: 240px; }
-  
-  /* Person Manager */
-  .person-manager-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 14px;
-    border-bottom: 1px solid var(--border-light);
-    gap: 12px;
-  }
-  
+
+  .person-manager-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; border-bottom: 1px solid var(--border-light); gap: 12px; }
   .person-manager-row:last-child { border-bottom: none; }
   .person-manager-row:hover { background: #faf8f2; }
-  
-  /* Scrollbar */
+
   ::-webkit-scrollbar { width: 12px; height: 12px; }
   ::-webkit-scrollbar-track { background: var(--bg); }
   ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 6px; }
   ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
-  
-  /* Responsive */
+
   @media (max-width: 768px) {
     body { padding: 16px 12px; font-size: 20px; }
     header { padding: 24px 24px; }
@@ -583,12 +268,6 @@
     .form-row { grid-template-columns: 1fr; }
     .activity-row { flex-direction: column; align-items: stretch; }
     .activity-actions { justify-content: flex-end; }
-  }
-  
-  @media print {
-    body { background: white; padding: 0; }
-    .header-actions, .panel-header button, .activity-actions, .modal-overlay { display: none !important; }
-    .panel { box-shadow: none; border: 1px solid #ccc; page-break-inside: avoid; }
   }
 </style>
 </head>
@@ -599,113 +278,172 @@
       <div class="header-content">
         <div class="header-title">
           <h1>מעקב אחרי ימי מילואים</h1>
-          <div class="header-subtitle">ניהול זימונים, ימי שירות וסיכומים</div>
+          <div class="header-subtitle">שמ"פ שנתי · שמ"פ פתוח · סגירת שמ"פ · מענקים</div>
         </div>
         <div class="header-actions">
-          <button class="btn-primary" onclick="openActivityModal()">+ הוסף פעילות</button>
+          <button class="btn-primary" onclick="openActivityModal()">+ הוסף שמ"פ / פעילות</button>
           <button class="btn-secondary" onclick="openPeopleModal()">ניהול אנשים</button>
-          <button class="btn-secondary" onclick="exportToExcel()" title="ייצוא טבלה ל-Excel (4 גיליונות)">📊 טבלת Excel</button>
+          <button class="btn-secondary" onclick="exportToExcel()" title="ייצוא לאקסל (כל הנתונים)">📊 Excel</button>
           <button class="btn-secondary" onclick="exportToReport()" title="דוח מודפס - ניתן לשמור כ-PDF">📄 דוח / PDF</button>
-          <button class="btn-secondary" onclick="exportJSON()" title="גיבוי מלא של כל הנתונים">💾 גיבוי</button>
-          <button class="btn-secondary" onclick="document.getElementById('importFile').click()" title="שחזור מקובץ גיבוי">📥 ייבוא</button>
+          <button class="btn-secondary" onclick="openTextModal()" title="ייצוא/ייבוא נתונים כטקסט - העתקה/הדבקה או קובץ .txt">📋 ייצוא/ייבוא טקסט</button>
+          <button class="btn-secondary" onclick="exportJSON()" title="גיבוי מלא (.json)">💾 גיבוי</button>
+          <button class="btn-secondary" onclick="document.getElementById('importFile').click()" title="שחזור מקובץ גיבוי .json">📥 ייבוא</button>
           <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)">
         </div>
       </div>
     </header>
-    
-    <!-- STATS -->
-    <div class="stats-grid" id="statsGrid"></div>
-    
-    <!-- FILTERS -->
-    <div class="panel">
-      <div class="panel-header">
-        <h2>סינון וחיפוש</h2>
-        <div id="filterSummary" style="font-size:18px; color:var(--text-light);"></div>
+
+    <!-- TAB BAR -->
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="annual" onclick="switchTab('annual')">📅 שמ"פ שנתי</button>
+      <button class="tab-btn" data-tab="open" onclick="switchTab('open')">🟢 שמ"פ פתוח (לפי תאריך)</button>
+      <button class="tab-btn" data-tab="closing" onclick="switchTab('closing')">🔚 סגירת שמ"פ (לפי חודש)</button>
+      <button class="tab-btn" data-tab="grants" onclick="switchTab('grants')">🎖️ מענקים</button>
+      <button class="tab-btn" data-tab="manage" onclick="switchTab('manage')">⚙ אנשים ופעילויות</button>
+    </div>
+
+    <!-- ============ TAB: ANNUAL ============ -->
+    <div class="tab-content active" id="tab-annual">
+      <div class="panel">
+        <div class="controls" style="margin-bottom:0;">
+          <div class="control-group">
+            <label>תקופת חישוב</label>
+            <select id="annualYear" onchange="render()"></select>
+          </div>
+          <div class="control-group" style="min-width:200px;">
+            <label>מיון רשימת אנשים</label>
+            <select id="annualSort" onchange="renderAnnualTab()">
+              <option value="days-desc">ימים (גבוה לנמוך)</option>
+              <option value="days-asc">ימים (נמוך לגבוה)</option>
+              <option value="name">שם א-ת</option>
+              <option value="id">מ.א.</option>
+            </select>
+          </div>
+          <div class="search-wrapper">
+            <label style="font-size:16px; color:var(--text-light); display:block; margin-bottom:6px;">חיפוש איש</label>
+            <input type="text" id="annualSearch" placeholder="שם או מספר אישי..." oninput="renderAnnualTab()">
+          </div>
+        </div>
       </div>
-      <div class="filters">
-        <div class="filter-group">
-          <label>תקופת חישוב</label>
-          <select id="filterPeriod" onchange="renderAll()">
-            <option value="all">סה"כ (כל הזמנים)</option>
-            <option value="year">לפי שנה</option>
-            <option value="month">לפי חודש</option>
-            <option value="activity">לפי פעילות</option>
-          </select>
+
+      <div class="stats-grid" id="annualStats"></div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <h2>🏆 בולטים בתקופה</h2>
+          <div style="font-size:17px; color:var(--text-light);">10 הראשונים לפי סך ימים</div>
         </div>
-        <div class="filter-group" id="yearFilterWrap" style="display:none">
-          <label>שנה</label>
-          <select id="filterYear" onchange="renderAll()"></select>
+        <div class="performers-grid" id="annualTop"></div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <h2>👥 רשימת אנשים (<span id="annualPeopleCount">0</span>)</h2>
         </div>
-        <div class="filter-group" id="monthFilterWrap" style="display:none">
-          <label>חודש</label>
-          <select id="filterMonth" onchange="renderAll()"></select>
-        </div>
-        <div class="filter-group" id="activityFilterWrap" style="display:none; min-width: 260px;">
-          <label>פעילות</label>
-          <select id="filterActivity" onchange="renderAll()"></select>
-        </div>
-        <div class="search-wrapper">
-          <label style="font-size:16px; color:var(--text-light); display:block; margin-bottom:6px;">חיפוש איש</label>
-          <input type="text" id="searchInput" placeholder="שם או מספר אישי..." oninput="renderPeople()">
-        </div>
+        <div class="people-list" id="annualPeople"></div>
       </div>
     </div>
-    
-    <!-- TOP PERFORMERS -->
-    <div class="panel">
-      <div class="panel-header">
-        <h2>🏆 בולטים בתקופה</h2>
-        <div style="font-size:17px; color:var(--text-light);">10 הראשונים לפי סך ימים</div>
-      </div>
-      <div class="performers-grid" id="topPerformers"></div>
-    </div>
-    
-    <!-- ACTIVITIES -->
-    <div class="panel">
-      <div class="panel-header">
-        <h2>📋 פעילויות (<span id="activitiesCount">0</span>)</h2>
-        <button class="btn-primary" onclick="openActivityModal()">+ פעילות חדשה</button>
-      </div>
-      <div id="activitiesList"></div>
-    </div>
-    
-    <!-- PEOPLE -->
-    <div class="panel">
-      <div class="panel-header">
-        <h2>👥 רשימת אנשים (<span id="peopleCount">0</span>)</h2>
-        <div style="display:flex; gap:10px; align-items:center;">
-          <label style="font-size:17px; color:var(--text-light);">מיון:</label>
-          <select id="peopleSort" onchange="renderPeople()">
-            <option value="days-desc">ימים (גבוה לנמוך)</option>
-            <option value="days-asc">ימים (נמוך לגבוה)</option>
-            <option value="name">שם א-ת</option>
-            <option value="id">מ.א.</option>
-          </select>
+
+    <!-- ============ TAB: OPEN BY DATE ============ -->
+    <div class="tab-content" id="tab-open">
+      <div class="panel">
+        <div class="panel-header">
+          <h2>🟢 שמ"פ פתוח - מי משתחרר ומתי</h2>
+          <div id="openSummary" style="font-size:17px; color:var(--text-light);"></div>
         </div>
+        <div class="controls">
+          <div class="control-group">
+            <label>תאריך ייחוס (פתוח = עוד לא נסגר)</label>
+            <input type="date" id="openRefDate" onchange="renderOpenTab()">
+          </div>
+          <label class="check-inline">
+            <input type="checkbox" id="openIncludeClosed" onchange="renderOpenTab()">
+            הצג גם שמ"פ שכבר נסגר
+          </label>
+        </div>
+        <div id="openList"></div>
       </div>
-      <div class="people-list" id="peopleList"></div>
     </div>
-    
+
+    <!-- ============ TAB: CLOSING BY MONTH ============ -->
+    <div class="tab-content" id="tab-closing">
+      <div class="panel">
+        <div class="panel-header">
+          <h2>🔚 סגירת שמ"פ לפי חודש</h2>
+          <div id="closingSummary" style="font-size:17px; color:var(--text-light);"></div>
+        </div>
+        <div class="controls">
+          <div class="control-group">
+            <label>שנה</label>
+            <select id="closingYear" onchange="renderClosingTab()"></select>
+          </div>
+        </div>
+        <div id="closingList"></div>
+      </div>
+    </div>
+
+    <!-- ============ TAB: GRANTS ============ -->
+    <div class="tab-content" id="tab-grants">
+      <div class="panel">
+        <div class="panel-header">
+          <h2>🎖️ מענקים (<span id="grantsCount">0</span>)</h2>
+          <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <button class="btn-neutral" onclick="openGrantTypesModal()">⚙ סוגי מענקים</button>
+            <button class="btn-primary" onclick="openGrantModal()">+ הענקת מענק</button>
+          </div>
+        </div>
+        <div id="grantsList"></div>
+      </div>
+    </div>
+
+    <!-- ============ TAB: MANAGE ============ -->
+    <div class="tab-content" id="tab-manage">
+      <div class="panel">
+        <div class="panel-header">
+          <h2>📋 פעילויות / תקופות שמ"פ (<span id="activitiesCount">0</span>)</h2>
+          <button class="btn-primary" onclick="openActivityModal()">+ פעילות חדשה</button>
+        </div>
+        <div id="activitiesList"></div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <h2>👥 רשימת אנשים (<span id="peopleCount">0</span>)</h2>
+          <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+            <input type="text" id="manageSearch" placeholder="חיפוש שם / מ.א...." oninput="renderManageTab()" style="min-width:200px;">
+            <label style="font-size:17px; color:var(--text-light);">מיון:</label>
+            <select id="manageSort" onchange="renderManageTab()">
+              <option value="days-desc">ימים (גבוה לנמוך)</option>
+              <option value="days-asc">ימים (נמוך לגבוה)</option>
+              <option value="name">שם א-ת</option>
+              <option value="id">מ.א.</option>
+            </select>
+          </div>
+        </div>
+        <div class="people-list" id="peopleList"></div>
+      </div>
+    </div>
+
     <footer style="text-align:center; padding: 24px; color: var(--text-muted); font-size: 16px;">
-      הנתונים נשמרים מקומית בדפדפן · מומלץ לעשות ייצוא לגיבוי
+      הנתונים נשמרים מקומית בדפדפן (localStorage) · מומלץ לעשות גיבוי לפני כל שינוי
     </footer>
   </div>
-  
+
   <!-- ACTIVITY MODAL -->
   <div class="modal-overlay" id="activityModal">
     <div class="modal">
       <h2 id="activityModalTitle">הוסף פעילות חדשה</h2>
       <div class="form-group">
-        <label>שם הפעילות</label>
+        <label>שם הפעילות / שמ"פ</label>
         <input type="text" id="activityName" placeholder="למשל: צו 8 - אוקטובר 2024">
       </div>
       <div class="form-row">
         <div class="form-group">
-          <label>מתאריך</label>
+          <label>מתאריך (תחילת שמ"פ)</label>
           <input type="date" id="activityStart">
         </div>
         <div class="form-group">
-          <label>עד תאריך</label>
+          <label>עד תאריך (יום השחרור)</label>
           <input type="date" id="activityEnd">
         </div>
       </div>
@@ -726,7 +464,83 @@
       </div>
     </div>
   </div>
-  
+
+  <!-- GRANT MODAL -->
+  <div class="modal-overlay" id="grantModal">
+    <div class="modal">
+      <h2 id="grantModalTitle">הענקת מענק</h2>
+      <div class="form-group">
+        <label>סוג מענק</label>
+        <select id="grantType"></select>
+      </div>
+      <div class="form-group">
+        <label>תאריך הענקה</label>
+        <input type="date" id="grantDate">
+      </div>
+      <div class="form-group">
+        <label>הערה (אופציונלי)</label>
+        <input type="text" id="grantNote" placeholder="למשל: מספר אסמכתא, אישור מפקד...">
+      </div>
+      <div class="form-group" id="grantPeopleWrap">
+        <label>מקבלי המענק</label>
+        <input type="text" placeholder="חפש איש בתוך הרשימה..." oninput="filterGrantPicker(this.value)" style="margin-bottom:10px;">
+        <div class="picker-toolbar">
+          <button type="button" class="btn-neutral btn-sm" onclick="toggleAllGrantPicker(true)">בחר הכל</button>
+          <button type="button" class="btn-neutral btn-sm" onclick="toggleAllGrantPicker(false)">נקה</button>
+          <span class="picker-count" id="grantPickerCount">0 נבחרו</span>
+        </div>
+        <div class="people-picker" id="grantPeoplePicker"></div>
+      </div>
+      <div class="form-group" id="grantSinglePersonWrap" style="display:none;">
+        <label>מקבל המענק</label>
+        <div id="grantSinglePersonLabel" style="font-size:20px; font-weight:600; color:var(--primary); padding:8px 0;"></div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-neutral" onclick="closeGrantModal()">ביטול</button>
+        <button class="btn-success" onclick="saveGrant()">שמור</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- GRANT TYPES MODAL -->
+  <div class="modal-overlay" id="grantTypesModal">
+    <div class="modal">
+      <h2>סוגי מענקים</h2>
+      <div class="form-group">
+        <label>הוסף סוג מענק חדש</label>
+        <div style="display:grid; grid-template-columns: 1fr auto; gap: 10px;">
+          <input type="text" id="newGrantTypeName" placeholder="שם סוג המענק">
+          <button class="btn-success" onclick="addGrantType()">הוסף</button>
+        </div>
+      </div>
+      <div style="max-height: 420px; overflow-y: auto; border: 1.5px solid var(--border-light); border-radius: 10px; margin-top: 18px;" id="grantTypesManagerList"></div>
+      <div class="modal-actions">
+        <button class="btn-neutral" onclick="closeGrantTypesModal()">סגור</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TEXT IMPORT/EXPORT MODAL -->
+  <div class="modal-overlay" id="textModal">
+    <div class="modal">
+      <h2>ייצוא / ייבוא טקסט</h2>
+      <p style="font-size:17px; color:var(--text-light); margin-bottom:14px;">
+        כל הנתונים (אנשים, פעילויות ומענקים) בפורמט טקסט. אפשר להעתיק את הטקסט, לשמור כקובץ .txt, או להדביק טקסט קיים וללחוץ "ייבא".
+      </p>
+      <textarea id="textData" spellcheck="false" style="width:100%; height:300px; font-family:ui-monospace,'Courier New',monospace; font-size:14px; padding:12px; border:1.5px solid var(--border); border-radius:9px; direction:ltr; text-align:left; resize:vertical; line-height:1.4;"></textarea>
+      <div class="picker-toolbar" style="margin-top:12px;">
+        <button class="btn-neutral btn-sm" onclick="copyTextData()">📋 העתק</button>
+        <button class="btn-neutral btn-sm" onclick="downloadTextData()">💾 הורד כ-.txt</button>
+        <button class="btn-neutral btn-sm" onclick="document.getElementById('importTextFile').click()">📂 טען קובץ טקסט</button>
+        <input type="file" id="importTextFile" accept=".txt,.json,text/plain" style="display:none" onchange="loadTextFile(event)">
+      </div>
+      <div class="modal-actions">
+        <button class="btn-neutral" onclick="closeTextModal()">סגור</button>
+        <button class="btn-success" onclick="importFromText()">ייבא מהטקסט</button>
+      </div>
+    </div>
+  </div>
+
   <!-- PEOPLE MANAGEMENT MODAL -->
   <div class="modal-overlay" id="peopleModal">
     <div class="modal">
@@ -804,13 +618,22 @@ const INITIAL_PEOPLE = [
   { id: "8851312", name: "יאיר תבורי" }
 ];
 
+// Default grant types seeded on first run / migration from old data
+const BUILTIN_GRANT_TYPES = [
+  { id: 'travel_enlarged', name: 'מענק נסיעות מוגדל' },
+  { id: 'tav_zahav', name: 'מענק תו זהב' }
+];
+
 const MONTH_NAMES = ['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
 const STORAGE_KEY = 'miluim_tracker_v1';
 
 // ===== State =====
-let state = { people: [], activities: [] };
+let state = { people: [], activities: [], grantTypes: [], grants: [] };
+let currentTab = 'annual';
 let editingActivityId = null;
+let editingGrantId = null;
 let pickerSelection = new Set();
+let grantPickerSelection = new Set();
 
 // ===== Persistence =====
 function loadState() {
@@ -818,9 +641,6 @@ function loadState() {
   if (raw) {
     try {
       state = JSON.parse(raw);
-      // Ensure all initial people exist (in case the user removed and we add new ones in updates)
-      const existingIds = new Set(state.people.map(p => p.id));
-      INITIAL_PEOPLE.forEach(p => { if (!existingIds.has(p.id)) state.people.push(p); });
     } catch(e) {
       console.error('Failed to load state:', e);
       state = { people: [...INITIAL_PEOPLE], activities: [] };
@@ -828,7 +648,19 @@ function loadState() {
   } else {
     state = { people: [...INITIAL_PEOPLE], activities: [] };
   }
+  migrateState();
+  // Ensure all initial people exist (preserves original app behavior)
+  const existingIds = new Set(state.people.map(p => p.id));
+  INITIAL_PEOPLE.forEach(p => { if (!existingIds.has(p.id)) state.people.push(p); });
   saveState();
+}
+
+// Backward-compatible migration: keeps existing localStorage data, adds new fields if missing
+function migrateState() {
+  if (!Array.isArray(state.people)) state.people = [...INITIAL_PEOPLE];
+  if (!Array.isArray(state.activities)) state.activities = [];
+  if (!Array.isArray(state.grantTypes)) state.grantTypes = BUILTIN_GRANT_TYPES.map(t => ({ ...t }));
+  if (!Array.isArray(state.grants)) state.grants = [];
 }
 
 function saveState() {
@@ -846,14 +678,13 @@ function daysBetween(startStr, endStr) {
   const diff = Math.round((e - s) / 86400000) + 1; // inclusive both ends
   return Math.max(diff, 0);
 }
-
-function formatDate(d) {
-  return new Date(d + 'T00:00:00').toLocaleDateString('he-IL');
+function diffDays(aStr, bStr) {
+  return Math.round((new Date(aStr + 'T00:00:00') - new Date(bStr + 'T00:00:00')) / 86400000);
 }
-
-function uuid() {
-  return Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
-}
+function formatDate(d) { return new Date(d + 'T00:00:00').toLocaleDateString('he-IL'); }
+function todayStr() { return new Date().toISOString().slice(0, 10); }
+function uuid() { return Math.random().toString(36).slice(2, 10) + Date.now().toString(36); }
+function escapeHtml(s) { return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
 function overlapDays(activity, periodStart, periodEnd) {
   const s = new Date(activity.startDate + 'T00:00:00');
@@ -866,265 +697,209 @@ function overlapDays(activity, periodStart, periodEnd) {
   return Math.round((overlapEnd - overlapStart) / 86400000) + 1;
 }
 
-// ===== Filter Logic =====
-function getCurrentFilter() {
-  const period = document.getElementById('filterPeriod').value;
-  return {
-    period,
-    year: parseInt(document.getElementById('filterYear').value) || new Date().getFullYear(),
-    month: parseInt(document.getElementById('filterMonth').value) || 0,
-    activityId: document.getElementById('filterActivity').value
-  };
+function getPersonName(personId) {
+  const p = state.people.find(x => x.id === personId);
+  return p ? p.name : '(לא ידוע)';
+}
+function getGrantTypeName(typeId) {
+  const t = state.grantTypes.find(x => x.id === typeId);
+  return t ? t.name : '(סוג נמחק)';
 }
 
-function getFilteredActivities() {
-  const f = getCurrentFilter();
-  
-  if (f.period === 'all') return state.activities;
-  
-  if (f.period === 'year') {
-    const ys = `${f.year}-01-01`, ye = `${f.year}-12-31`;
-    return state.activities.filter(a => overlapDays(a, ys, ye) > 0);
-  }
-  
-  if (f.period === 'month') {
-    const ms = new Date(f.year, f.month, 1);
-    const me = new Date(f.year, f.month + 1, 0);
-    const msStr = ms.toISOString().slice(0, 10);
-    const meStr = me.toISOString().slice(0, 10);
-    return state.activities.filter(a => overlapDays(a, msStr, meStr) > 0);
-  }
-  
-  if (f.period === 'activity') {
-    return state.activities.filter(a => a.id === f.activityId);
-  }
-  
-  return state.activities;
-}
-
-function getDaysForActivityInFilter(activity) {
-  const f = getCurrentFilter();
-  
-  if (f.period === 'all' || f.period === 'activity') {
-    return daysBetween(activity.startDate, activity.endDate);
-  }
-  
-  if (f.period === 'year') {
-    return overlapDays(activity, `${f.year}-01-01`, `${f.year}-12-31`);
-  }
-  
-  if (f.period === 'month') {
-    const ms = new Date(f.year, f.month, 1);
-    const me = new Date(f.year, f.month + 1, 0);
-    return overlapDays(activity, ms.toISOString().slice(0,10), me.toISOString().slice(0,10));
-  }
-  
+// ===== Scope logic (replaces old global filter) =====
+// scope: { type: 'all' } | { type: 'year', year: <number> }
+function activityDaysInScope(activity, scope) {
+  if (scope.type === 'year') return overlapDays(activity, `${scope.year}-01-01`, `${scope.year}-12-31`);
   return daysBetween(activity.startDate, activity.endDate);
 }
-
-function getPersonStats(personId) {
-  const filtered = getFilteredActivities().filter(a => a.participants.includes(personId));
-  const totalDays = filtered.reduce((sum, a) => sum + getDaysForActivityInFilter(a), 0);
-  return { totalDays, activities: filtered };
+function activitiesInScope(scope) {
+  if (scope.type === 'year') return state.activities.filter(a => activityDaysInScope(a, scope) > 0);
+  return state.activities;
+}
+function grantsInScope(scope) {
+  if (scope.type === 'year') return state.grants.filter(g => new Date(g.date + 'T00:00:00').getFullYear() === scope.year);
+  return state.grants;
+}
+function personStatsInScope(personId, scope) {
+  const acts = activitiesInScope(scope).filter(a => (a.participants || []).includes(personId));
+  const totalDays = acts.reduce((sum, a) => sum + activityDaysInScope(a, scope), 0);
+  return { totalDays, activities: acts };
+}
+function personGrantsInScope(personId, scope) {
+  return grantsInScope(scope).filter(g => g.personId === personId);
 }
 
-// ===== Filter UI =====
-function updateFilterUI() {
-  const f = getCurrentFilter();
-  document.getElementById('yearFilterWrap').style.display = (f.period === 'year' || f.period === 'month') ? '' : 'none';
-  document.getElementById('monthFilterWrap').style.display = f.period === 'month' ? '' : 'none';
-  document.getElementById('activityFilterWrap').style.display = f.period === 'activity' ? '' : 'none';
-  
-  // Populate years
-  const yearSel = document.getElementById('filterYear');
+function getAnnualScope() {
+  const v = document.getElementById('annualYear').value;
+  if (!v || v === 'all') return { type: 'all' };
+  return { type: 'year', year: parseInt(v) };
+}
+
+function scopeLabel(scope) {
+  return scope.type === 'year' ? `שנת ${scope.year}` : 'כל הזמנים';
+}
+
+// ===== Discharge events (one per person per activity; discharge day = activity end date) =====
+function getDischargeEvents() {
+  const events = [];
+  state.activities.forEach(a => {
+    (a.participants || []).forEach(pid => {
+      events.push({
+        personId: pid,
+        personName: getPersonName(pid),
+        activityId: a.id,
+        activityName: a.name,
+        startDate: a.startDate,
+        dischargeDate: a.endDate,
+        days: daysBetween(a.startDate, a.endDate)
+      });
+    });
+  });
+  return events;
+}
+
+function getYearOptions() {
   const years = new Set();
   state.activities.forEach(a => {
     const sy = new Date(a.startDate).getFullYear();
     const ey = new Date(a.endDate).getFullYear();
     for (let y = sy; y <= ey; y++) years.add(y);
   });
+  state.grants.forEach(g => years.add(new Date(g.date).getFullYear()));
   years.add(new Date().getFullYear());
-  const sortedYears = [...years].sort((a, b) => b - a);
-  const currentYear = yearSel.value;
-  yearSel.innerHTML = sortedYears.map(y => `<option value="${y}">${y}</option>`).join('');
-  if (currentYear && sortedYears.map(String).includes(currentYear)) yearSel.value = currentYear;
-  
-  // Populate months
-  const monthSel = document.getElementById('filterMonth');
-  const currentMonth = monthSel.value;
-  monthSel.innerHTML = MONTH_NAMES.map((m, i) => `<option value="${i}">${m}</option>`).join('');
-  if (currentMonth !== '') monthSel.value = currentMonth;
-  
-  // Populate activities
-  const actSel = document.getElementById('filterActivity');
-  const currentAct = actSel.value;
-  const sortedActs = [...state.activities].sort((a, b) => new Date(b.startDate) - new Date(a.startDate));
-  actSel.innerHTML = sortedActs.length === 0
-    ? '<option value="">אין פעילויות</option>'
-    : sortedActs.map(a => `<option value="${a.id}">${escapeHtml(a.name)} (${formatDate(a.startDate)})</option>`).join('');
-  if (currentAct && sortedActs.find(a => a.id === currentAct)) actSel.value = currentAct;
-  
-  // Update summary text
-  let summary = '';
-  if (f.period === 'all') summary = 'מציג: כל הזמנים';
-  else if (f.period === 'year') summary = `מציג: שנת ${f.year}`;
-  else if (f.period === 'month') summary = `מציג: ${MONTH_NAMES[f.month]} ${f.year}`;
-  else if (f.period === 'activity') {
-    const a = state.activities.find(x => x.id === f.activityId);
-    summary = a ? `מציג: ${a.name}` : 'בחר פעילות';
-  }
-  document.getElementById('filterSummary').textContent = summary;
+  return [...years].sort((a, b) => b - a);
 }
 
-// ===== Rendering =====
-function escapeHtml(s) {
-  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+// ===== Tabs =====
+function switchTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.toggle('active', c.id === 'tab-' + tab));
+  renderActiveTab();
 }
 
-function renderStats() {
-  const activities = getFilteredActivities();
+function render() {
+  populateYearSelects();
+  renderActiveTab();
+}
+
+function renderActiveTab() {
+  if (currentTab === 'annual') renderAnnualTab();
+  else if (currentTab === 'open') renderOpenTab();
+  else if (currentTab === 'closing') renderClosingTab();
+  else if (currentTab === 'grants') renderGrantsTab();
+  else if (currentTab === 'manage') renderManageTab();
+}
+
+function populateYearSelects() {
+  const years = getYearOptions();
+  // Annual select (with "כל הזמנים")
+  const aSel = document.getElementById('annualYear');
+  const aCur = aSel.value;
+  aSel.innerHTML = '<option value="all">כל הזמנים</option>' + years.map(y => `<option value="${y}">שנת ${y}</option>`).join('');
+  if (aCur && (aCur === 'all' || years.map(String).includes(aCur))) aSel.value = aCur;
+  else aSel.value = years.includes(new Date().getFullYear()) ? String(new Date().getFullYear()) : 'all';
+  // Closing select (with "כל השנים")
+  const cSel = document.getElementById('closingYear');
+  const cCur = cSel.value;
+  cSel.innerHTML = '<option value="all">כל השנים</option>' + years.map(y => `<option value="${y}">${y}</option>`).join('');
+  if (cCur && (cCur === 'all' || years.map(String).includes(cCur))) cSel.value = cCur;
+  else cSel.value = years.includes(new Date().getFullYear()) ? String(new Date().getFullYear()) : 'all';
+  // Default reference date for open tab
+  const ref = document.getElementById('openRefDate');
+  if (!ref.value) ref.value = todayStr();
+}
+
+// ===== TAB: Annual =====
+function renderAnnualTab() {
+  const scope = getAnnualScope();
+  const acts = activitiesInScope(scope);
+
+  // Stats
   let totalManDays = 0;
-  
-  activities.forEach(a => {
-    const days = getDaysForActivityInFilter(a);
-    totalManDays += days * a.participants.length;
-  });
-  
+  acts.forEach(a => { totalManDays += activityDaysInScope(a, scope) * (a.participants || []).length; });
   const activePeople = new Set();
-  activities.forEach(a => a.participants.forEach(p => activePeople.add(p)));
-  
+  acts.forEach(a => (a.participants || []).forEach(p => activePeople.add(p)));
   const avgDays = activePeople.size > 0 ? (totalManDays / activePeople.size).toFixed(1) : 0;
-  
-  document.getElementById('statsGrid').innerHTML = `
-    <div class="stat-card">
-      <div class="stat-label">סך אנשים ברשימה</div>
-      <div class="stat-value">${state.people.length}</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">פעילויות בתקופה</div>
-      <div class="stat-value">${activities.length}</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">סך ימי-אדם</div>
-      <div class="stat-value">${totalManDays}<span class="stat-unit">ימים</span></div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">אנשים פעילים</div>
-      <div class="stat-value">${activePeople.size}<span class="stat-unit">מתוך ${state.people.length}</span></div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">ממוצע ימים לאיש פעיל</div>
-      <div class="stat-value">${avgDays}<span class="stat-unit">ימים</span></div>
-    </div>
+  const grantsCount = grantsInScope(scope).length;
+
+  document.getElementById('annualStats').innerHTML = `
+    <div class="stat-card"><div class="stat-label">סך אנשים ברשימה</div><div class="stat-value">${state.people.length}</div></div>
+    <div class="stat-card"><div class="stat-label">פעילויות בתקופה</div><div class="stat-value">${acts.length}</div></div>
+    <div class="stat-card"><div class="stat-label">סך ימי-אדם</div><div class="stat-value">${totalManDays}<span class="stat-unit">ימים</span></div></div>
+    <div class="stat-card"><div class="stat-label">אנשים פעילים</div><div class="stat-value">${activePeople.size}<span class="stat-unit">מתוך ${state.people.length}</span></div></div>
+    <div class="stat-card"><div class="stat-label">ממוצע ימים לאיש פעיל</div><div class="stat-value">${avgDays}<span class="stat-unit">ימים</span></div></div>
+    <div class="stat-card grant-stat"><div class="stat-label">מענקים בתקופה</div><div class="stat-value">${grantsCount}<span class="stat-unit">הענקות</span></div></div>
   `;
-}
 
-function renderTopPerformers() {
-  const stats = state.people.map(p => ({
-    ...p,
-    days: getPersonStats(p.id).totalDays
-  })).filter(p => p.days > 0).sort((a, b) => b.days - a.days);
-  
-  const container = document.getElementById('topPerformers');
-  
-  if (stats.length === 0) {
-    container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📊</div>אין עדיין נתונים בתקופה הנבחרת. הוסף פעילויות כדי לראות את הבולטים.</div>';
-    return;
-  }
-  
-  const totalDays = stats.reduce((s, p) => s + p.days, 0);
-  const maxDays = stats[0].days;
-  const top = stats.slice(0, 10);
-  
-  container.innerHTML = top.map((p, i) => {
-    const pct = ((p.days / totalDays) * 100).toFixed(1);
-    const barPct = (p.days / maxDays) * 100;
-    const rankClass = i < 3 ? `rank-${i + 1}` : '';
-    return `
-      <div class="performer ${rankClass}">
-        <div class="performer-rank">${i + 1}</div>
-        <div class="performer-info">
-          <div class="performer-name">${escapeHtml(p.name)}</div>
-          <div class="performer-stats"><strong>${p.days}</strong> ימים · <strong>${pct}%</strong> מהסך · ${getPersonStats(p.id).activities.length} זימונים</div>
-          <div class="percentage-bar"><div class="percentage-fill" style="width:${barPct}%"></div></div>
-        </div>
-      </div>
-    `;
-  }).join('');
-}
-
-function renderActivities() {
-  const container = document.getElementById('activitiesList');
-  document.getElementById('activitiesCount').textContent = state.activities.length;
-  
-  if (state.activities.length === 0) {
-    container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📋</div>אין פעילויות עדיין.<br>לחץ על "הוסף פעילות" כדי להתחיל.</div>';
-    return;
-  }
-  
-  const sorted = [...state.activities].sort((a, b) => new Date(b.startDate) - new Date(a.startDate));
-  
-  container.innerHTML = sorted.map(a => {
-    const days = daysBetween(a.startDate, a.endDate);
-    return `
-      <div class="activity-row">
-        <div class="activity-info">
-          <div class="activity-name">${escapeHtml(a.name)}</div>
-          <div class="activity-meta">
-            <span class="activity-meta-item">📅 ${formatDate(a.startDate)} - ${formatDate(a.endDate)}</span>
-            <span class="activity-meta-item">⏱️ ${days} ימים</span>
-            <span class="activity-meta-item">👥 ${a.participants.length} משתתפים</span>
+  // Top performers
+  const ranked = state.people
+    .map(p => ({ ...p, days: personStatsInScope(p.id, scope).totalDays }))
+    .filter(p => p.days > 0)
+    .sort((a, b) => b.days - a.days);
+  const topC = document.getElementById('annualTop');
+  if (ranked.length === 0) {
+    topC.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📊</div>אין נתונים בתקופה הנבחרת.</div>';
+  } else {
+    const totalDays = ranked.reduce((s, p) => s + p.days, 0);
+    const maxDays = ranked[0].days;
+    topC.innerHTML = ranked.slice(0, 10).map((p, i) => {
+      const pct = ((p.days / totalDays) * 100).toFixed(1);
+      const barPct = (p.days / maxDays) * 100;
+      const rankClass = i < 3 ? `rank-${i + 1}` : '';
+      const summons = personStatsInScope(p.id, scope).activities.length;
+      return `
+        <div class="performer ${rankClass}">
+          <div class="performer-rank">${i + 1}</div>
+          <div class="performer-info">
+            <div class="performer-name">${escapeHtml(p.name)}</div>
+            <div class="performer-stats"><strong>${p.days}</strong> ימים · <strong>${pct}%</strong> מהסך · ${summons} זימונים</div>
+            <div class="percentage-bar"><div class="percentage-fill" style="width:${barPct}%"></div></div>
           </div>
-        </div>
-        <div class="activity-actions">
-          <button class="btn-neutral btn-sm" onclick="editActivity('${a.id}')">ערוך</button>
-          <button class="btn-danger btn-sm" onclick="deleteActivity('${a.id}')">מחק</button>
-        </div>
-      </div>
-    `;
-  }).join('');
+        </div>`;
+    }).join('');
+  }
+
+  // People list
+  renderPeopleCards(scope, 'annualPeople', 'annualPeopleCount',
+    document.getElementById('annualSearch').value, document.getElementById('annualSort').value);
 }
 
-function renderPeople() {
-  const search = document.getElementById('searchInput').value.trim().toLowerCase();
-  const sortBy = document.getElementById('peopleSort').value;
-  const container = document.getElementById('peopleList');
-  
-  document.getElementById('peopleCount').textContent = state.people.length;
-  
-  const peopleWithStats = state.people.map(p => ({ ...p, stats: getPersonStats(p.id) }));
-  
-  // Determine top 3 for highlighting (only those with > 0 days)
+function renderPeopleCards(scope, containerId, countId, search, sortBy) {
+  search = (search || '').trim().toLowerCase();
+  const container = document.getElementById(containerId);
+  if (countId) document.getElementById(countId).textContent = state.people.length;
+
+  const peopleWithStats = state.people.map(p => ({ ...p, stats: personStatsInScope(p.id, scope) }));
   const sortedByDays = [...peopleWithStats].filter(p => p.stats.totalDays > 0).sort((a, b) => b.stats.totalDays - a.stats.totalDays);
   const topIds = new Set(sortedByDays.slice(0, 3).map(p => p.id));
-  
-  let filtered = peopleWithStats.filter(p => 
-    !search || p.name.toLowerCase().includes(search) || p.id.includes(search)
-  );
-  
-  // Sort
+
+  let filtered = peopleWithStats.filter(p => !search || p.name.toLowerCase().includes(search) || p.id.includes(search));
   if (sortBy === 'days-desc') filtered.sort((a, b) => b.stats.totalDays - a.stats.totalDays || a.name.localeCompare(b.name, 'he'));
   else if (sortBy === 'days-asc') filtered.sort((a, b) => a.stats.totalDays - b.stats.totalDays || a.name.localeCompare(b.name, 'he'));
   else if (sortBy === 'name') filtered.sort((a, b) => a.name.localeCompare(b.name, 'he'));
   else if (sortBy === 'id') filtered.sort((a, b) => a.id.localeCompare(b.id));
-  
+
   if (filtered.length === 0) {
     container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🔍</div>אין אנשים תואמים לחיפוש.</div>';
     return;
   }
-  
+
   container.innerHTML = filtered.map(p => {
     const isTop3 = topIds.has(p.id);
     const cardClass = isTop3 ? 'top-3' : (p.stats.totalDays > 0 ? 'active' : '');
     const daysClass = p.stats.totalDays === 0 ? 'zero' : (isTop3 ? 'high' : '');
-    
     const activitiesHTML = p.stats.activities.length === 0
       ? '<div style="color:var(--text-muted); font-size:18px; font-style:italic;">אין זימונים בתקופה הנבחרת</div>'
       : p.stats.activities.map(a => {
-          const d = getDaysForActivityInFilter(a);
-          return `<span class="activity-tag" title="${formatDate(a.startDate)} - ${formatDate(a.endDate)}">${escapeHtml(a.name)} · <strong>${d}</strong> ימים</span>`;
+          const d = activityDaysInScope(a, scope);
+          return `<span class="activity-tag" title="${formatDate(a.startDate)} - ${formatDate(a.endDate)} · שחרור: ${formatDate(a.endDate)}">${escapeHtml(a.name)} · <strong>${d}</strong> ימים</span>`;
         }).join('');
-    
+    const pg = personGrantsInScope(p.id, scope).sort((a, b) => new Date(b.date) - new Date(a.date));
+    const grantsHTML = pg.length === 0 ? '' :
+      '<div class="person-grants">' + pg.map(g =>
+        `<span class="grant-tag" title="${formatDate(g.date)}">🎖️ ${escapeHtml(getGrantTypeName(g.typeId))} · ${formatDate(g.date)}</span>`
+      ).join('') + '</div>';
     return `
       <div class="person-card ${cardClass}">
         <div class="person-header">
@@ -1135,171 +910,407 @@ function renderPeople() {
           <div class="person-days ${daysClass}">${p.stats.totalDays} ימים</div>
         </div>
         <div class="activities-list">${activitiesHTML}</div>
-      </div>
-    `;
+        ${grantsHTML}
+      </div>`;
   }).join('');
 }
 
-function renderAll() {
-  updateFilterUI();
-  renderStats();
-  renderTopPerformers();
-  renderActivities();
-  renderPeople();
+// ===== TAB: Open by date =====
+function renderOpenTab() {
+  const refDate = document.getElementById('openRefDate').value || todayStr();
+  const includeClosed = document.getElementById('openIncludeClosed').checked;
+  const container = document.getElementById('openList');
+
+  let events = getDischargeEvents();
+  const openEvents = events.filter(e => e.dischargeDate >= refDate);
+  const shown = includeClosed ? events : openEvents;
+
+  document.getElementById('openSummary').textContent =
+    `${openEvents.length} שחרורים פתוחים (מ-${formatDate(refDate)} והלאה)`;
+
+  if (shown.length === 0) {
+    container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🟢</div>אין שמ"פ פתוח לתאריך הנבחר.<br>אם חסרות פעילויות - ודא שהנתונים נטענו (ראה הערה למטה).</div>';
+    return;
+  }
+
+  // Group by discharge date, ascending (soonest first)
+  const byDate = {};
+  shown.forEach(e => { (byDate[e.dischargeDate] = byDate[e.dischargeDate] || []).push(e); });
+  const dates = Object.keys(byDate).sort();
+
+  container.innerHTML = dates.map(date => {
+    const list = byDate[date].sort((a, b) => a.personName.localeCompare(b.personName, 'he'));
+    const d = diffDays(date, refDate);
+    let rel, badgeClass;
+    if (d > 0) { rel = `בעוד ${d} ימים`; badgeClass = 'open'; }
+    else if (d === 0) { rel = 'היום'; badgeClass = 'today'; }
+    else { rel = `נסגר לפני ${Math.abs(d)} ימים`; badgeClass = 'closed'; }
+    return `
+      <div class="group">
+        <div class="group-header">
+          <span class="g-title">📅 ${formatDate(date)}</span>
+          <span class="g-meta">${list.length} משתחררים · <span class="badge ${badgeClass}">${rel}</span></span>
+        </div>
+        ${list.map(e => `
+          <div class="discharge-row">
+            <div class="discharge-info">
+              <div class="discharge-who">${escapeHtml(e.personName)} <span style="color:var(--text-muted); font-size:15px; font-weight:400;">· ${e.personId}</span></div>
+              <div class="discharge-what">${escapeHtml(e.activityName)} · ${e.days} ימים · מ-${formatDate(e.startDate)}</div>
+            </div>
+            <span class="badge ${badgeClass}">${rel}</span>
+          </div>`).join('')}
+      </div>`;
+  }).join('');
+}
+
+// ===== TAB: Closing by month =====
+function renderClosingTab() {
+  const yearVal = document.getElementById('closingYear').value;
+  const container = document.getElementById('closingList');
+
+  let events = getDischargeEvents();
+  if (yearVal && yearVal !== 'all') {
+    const y = parseInt(yearVal);
+    events = events.filter(e => new Date(e.dischargeDate + 'T00:00:00').getFullYear() === y);
+  }
+
+  document.getElementById('closingSummary').textContent =
+    `${events.length} שחרורים${yearVal !== 'all' ? ' בשנת ' + yearVal : ''}`;
+
+  if (events.length === 0) {
+    container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🔚</div>אין שחרורים בתקופה הנבחרת.</div>';
+    return;
+  }
+
+  // Group by year-month
+  const byMonth = {};
+  events.forEach(e => {
+    const dt = new Date(e.dischargeDate + 'T00:00:00');
+    const key = `${dt.getFullYear()}-${String(dt.getMonth()).padStart(2, '0')}`;
+    (byMonth[key] = byMonth[key] || []).push(e);
+  });
+  const keys = Object.keys(byMonth).sort(); // chronological ascending
+
+  container.innerHTML = keys.map(key => {
+    const [y, m] = key.split('-').map(Number);
+    const list = byMonth[key].sort((a, b) => a.dischargeDate.localeCompare(b.dischargeDate) || a.personName.localeCompare(b.personName, 'he'));
+    const uniquePeople = new Set(list.map(e => e.personId)).size;
+    return `
+      <div class="group month-group">
+        <div class="group-header">
+          <span class="g-title">${MONTH_NAMES[m]} ${y}</span>
+          <span class="g-meta">${list.length} שחרורים · ${uniquePeople} אנשים</span>
+        </div>
+        ${list.map(e => `
+          <div class="discharge-row">
+            <div class="discharge-info">
+              <div class="discharge-who">${escapeHtml(e.personName)} <span style="color:var(--text-muted); font-size:15px; font-weight:400;">· ${e.personId}</span></div>
+              <div class="discharge-what">${escapeHtml(e.activityName)} · ${e.days} ימים</div>
+            </div>
+            <span class="badge closed" style="background:#eef2f8; color:var(--primary);">📅 ${formatDate(e.dischargeDate)}</span>
+          </div>`).join('')}
+      </div>`;
+  }).join('');
+}
+
+// ===== TAB: Grants =====
+function renderGrantsTab() {
+  const container = document.getElementById('grantsList');
+  const grants = state.grants;
+  document.getElementById('grantsCount').textContent = grants.length;
+
+  if (state.grantTypes.length === 0) {
+    container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🎖️</div>אין סוגי מענקים מוגדרים.<br>לחץ על "סוגי מענקים" כדי להוסיף.</div>';
+    return;
+  }
+
+  container.innerHTML = state.grantTypes.map(type => {
+    const typeGrants = grants.filter(g => g.typeId === type.id).sort((a, b) => new Date(b.date) - new Date(a.date));
+    const rows = typeGrants.length === 0
+      ? '<div style="color:var(--text-muted); font-size:18px; font-style:italic; padding:4px 4px 2px;">טרם חולקו הענקות</div>'
+      : typeGrants.map(g => `
+          <div class="grant-row">
+            <div class="grant-info">
+              <span class="grant-person">${escapeHtml(getPersonName(g.personId))} <span style="color:var(--text-muted); font-size:16px; font-weight:400;">· ${g.personId}</span></span>
+              <span class="grant-meta">📅 ${formatDate(g.date)}${g.note ? ' · ' + escapeHtml(g.note) : ''}</span>
+            </div>
+            <div class="activity-actions">
+              <button class="btn-neutral btn-sm" onclick="openGrantModal('${g.id}')">ערוך</button>
+              <button class="btn-danger btn-sm" onclick="deleteGrant('${g.id}')">מחק</button>
+            </div>
+          </div>`).join('');
+    return `
+      <div class="grant-type-block">
+        <div class="grant-type-header">
+          <h3>🎖️ ${escapeHtml(type.name)} <span class="grant-type-count">(${typeGrants.length})</span></h3>
+          <button class="btn-primary btn-sm" onclick="openGrantModal(null, '${type.id}')">+ הענקה</button>
+        </div>
+        ${rows}
+      </div>`;
+  }).join('');
+}
+
+// ===== TAB: Manage =====
+function renderManageTab() {
+  // Activities
+  const ac = document.getElementById('activitiesList');
+  document.getElementById('activitiesCount').textContent = state.activities.length;
+  if (state.activities.length === 0) {
+    ac.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📋</div>אין פעילויות עדיין.<br>לחץ על "פעילות חדשה" כדי להתחיל.</div>';
+  } else {
+    const sorted = [...state.activities].sort((a, b) => new Date(b.startDate) - new Date(a.startDate));
+    ac.innerHTML = sorted.map(a => {
+      const days = daysBetween(a.startDate, a.endDate);
+      return `
+        <div class="activity-row">
+          <div class="activity-info">
+            <div class="activity-name">${escapeHtml(a.name)}</div>
+            <div class="activity-meta">
+              <span class="activity-meta-item">📅 ${formatDate(a.startDate)} - ${formatDate(a.endDate)}</span>
+              <span class="activity-meta-item">🔚 שחרור: ${formatDate(a.endDate)}</span>
+              <span class="activity-meta-item">⏱️ ${days} ימים</span>
+              <span class="activity-meta-item">👥 ${(a.participants || []).length} משתתפים</span>
+            </div>
+          </div>
+          <div class="activity-actions">
+            <button class="btn-neutral btn-sm" onclick="editActivity('${a.id}')">ערוך</button>
+            <button class="btn-danger btn-sm" onclick="deleteActivity('${a.id}')">מחק</button>
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  // People (all-time)
+  renderPeopleCards({ type: 'all' }, 'peopleList', 'peopleCount',
+    document.getElementById('manageSearch').value, document.getElementById('manageSort').value);
 }
 
 // ===== Activity Modal =====
 function openActivityModal(id) {
   editingActivityId = id || null;
   document.getElementById('activityModalTitle').textContent = id ? 'ערוך פעילות' : 'הוסף פעילות חדשה';
-  
   if (id) {
     const a = state.activities.find(x => x.id === id);
     document.getElementById('activityName').value = a.name;
     document.getElementById('activityStart').value = a.startDate;
     document.getElementById('activityEnd').value = a.endDate;
-    pickerSelection = new Set(a.participants);
+    pickerSelection = new Set(a.participants || []);
   } else {
     document.getElementById('activityName').value = '';
     document.getElementById('activityStart').value = '';
     document.getElementById('activityEnd').value = '';
     pickerSelection = new Set();
   }
-  
   renderPicker();
   updateDayPreview();
   document.getElementById('activityModal').classList.add('active');
-  
-  // Listen for date changes
   document.getElementById('activityStart').oninput = updateDayPreview;
   document.getElementById('activityEnd').oninput = updateDayPreview;
 }
-
 function updateDayPreview() {
   const s = document.getElementById('activityStart').value;
   const e = document.getElementById('activityEnd').value;
   const preview = document.getElementById('dayCountPreview');
   if (s && e) {
     const d = daysBetween(s, e);
-    if (d > 0) preview.innerHTML = `📊 משך הפעילות: <strong style="color:var(--primary);">${d} ימים</strong>`;
+    if (d > 0) preview.innerHTML = `📊 משך הפעילות: <strong style="color:var(--primary);">${d} ימים</strong> · יום שחרור: <strong style="color:var(--primary);">${formatDate(e)}</strong>`;
     else preview.innerHTML = '<span style="color:var(--danger);">⚠ תאריך סיום חייב להיות אחרי תאריך התחלה</span>';
   } else preview.textContent = '';
 }
-
-function closeActivityModal() {
-  document.getElementById('activityModal').classList.remove('active');
-  editingActivityId = null;
-}
-
+function closeActivityModal() { document.getElementById('activityModal').classList.remove('active'); editingActivityId = null; }
 function renderPicker(searchTerm = '') {
   const container = document.getElementById('peoplePicker');
   const filtered = state.people
     .filter(p => !searchTerm || p.name.toLowerCase().includes(searchTerm.toLowerCase()) || p.id.includes(searchTerm))
     .sort((a, b) => a.name.localeCompare(b.name, 'he'));
-  
   container.innerHTML = filtered.map(p => `
     <label class="person-checkbox">
       <input type="checkbox" data-id="${p.id}" ${pickerSelection.has(p.id) ? 'checked' : ''} onchange="togglePickerPerson('${p.id}', this.checked)">
       <span>${escapeHtml(p.name)} <span class="id-label">· ${p.id}</span></span>
-    </label>
-  `).join('');
-  
+    </label>`).join('');
   updatePickerCount();
 }
-
-function updatePickerCount() {
-  document.getElementById('pickerCount').textContent = `${pickerSelection.size} נבחרו`;
-}
-
-function filterPeoplePicker(term) {
-  renderPicker(term);
-}
-
-function togglePickerPerson(id, checked) {
-  if (checked) pickerSelection.add(id);
-  else pickerSelection.delete(id);
-  updatePickerCount();
-}
-
+function updatePickerCount() { document.getElementById('pickerCount').textContent = `${pickerSelection.size} נבחרו`; }
+function filterPeoplePicker(term) { renderPicker(term); }
+function togglePickerPerson(id, checked) { if (checked) pickerSelection.add(id); else pickerSelection.delete(id); updatePickerCount(); }
 function toggleAllPickerPeople(select) {
   document.querySelectorAll('#peoplePicker input[type="checkbox"]').forEach(cb => {
     const id = cb.dataset.id;
-    if (select) pickerSelection.add(id);
-    else pickerSelection.delete(id);
+    if (select) pickerSelection.add(id); else pickerSelection.delete(id);
     cb.checked = select;
   });
   updatePickerCount();
 }
-
 function saveActivity() {
   const name = document.getElementById('activityName').value.trim();
   const startDate = document.getElementById('activityStart').value;
   const endDate = document.getElementById('activityEnd').value;
-  
   if (!name) { alert('יש להזין שם פעילות'); return; }
   if (!startDate || !endDate) { alert('יש להזין תאריך התחלה ותאריך סיום'); return; }
   if (new Date(endDate) < new Date(startDate)) { alert('תאריך סיום חייב להיות אחרי תאריך התחלה'); return; }
-  if (pickerSelection.size === 0) {
-    if (!confirm('לא נבחרו משתתפים. לשמור בכל זאת?')) return;
-  }
-  
+  if (pickerSelection.size === 0) { if (!confirm('לא נבחרו משתתפים. לשמור בכל זאת?')) return; }
   if (editingActivityId) {
     const a = state.activities.find(x => x.id === editingActivityId);
-    a.name = name;
-    a.startDate = startDate;
-    a.endDate = endDate;
-    a.participants = [...pickerSelection];
+    a.name = name; a.startDate = startDate; a.endDate = endDate; a.participants = [...pickerSelection];
   } else {
-    state.activities.push({
-      id: uuid(),
-      name, startDate, endDate,
-      participants: [...pickerSelection]
-    });
+    state.activities.push({ id: uuid(), name, startDate, endDate, participants: [...pickerSelection] });
   }
-  
-  saveState();
-  closeActivityModal();
-  renderAll();
+  saveState(); closeActivityModal(); render();
 }
-
 function editActivity(id) { openActivityModal(id); }
-
 function deleteActivity(id) {
   const a = state.activities.find(x => x.id === id);
   if (!a) return;
   if (!confirm(`למחוק את הפעילות "${a.name}"?`)) return;
   state.activities = state.activities.filter(x => x.id !== id);
+  saveState(); render();
+}
+
+// ===== Grant Modal =====
+function populateGrantTypeSelect(selectedId) {
+  const sel = document.getElementById('grantType');
+  sel.innerHTML = state.grantTypes.map(t => `<option value="${t.id}">${escapeHtml(t.name)}</option>`).join('');
+  if (selectedId) sel.value = selectedId;
+}
+function openGrantModal(grantId, presetTypeId) {
+  if (state.grantTypes.length === 0) { alert('אין סוגי מענקים מוגדרים. הוסף סוג מענק תחילה דרך "סוגי מענקים".'); return; }
+  editingGrantId = grantId || null;
+  document.getElementById('grantModalTitle').textContent = grantId ? 'עריכת הענקה' : 'הענקת מענק';
+  populateGrantTypeSelect();
+  if (grantId) {
+    const g = state.grants.find(x => x.id === grantId);
+    document.getElementById('grantType').value = g.typeId;
+    document.getElementById('grantDate').value = g.date;
+    document.getElementById('grantNote').value = g.note || '';
+    document.getElementById('grantPeopleWrap').style.display = 'none';
+    document.getElementById('grantSinglePersonWrap').style.display = '';
+    document.getElementById('grantSinglePersonLabel').textContent = getPersonName(g.personId) + ' · ' + g.personId;
+  } else {
+    document.getElementById('grantType').value = presetTypeId || state.grantTypes[0].id;
+    document.getElementById('grantDate').value = todayStr();
+    document.getElementById('grantNote').value = '';
+    grantPickerSelection = new Set();
+    document.getElementById('grantPeopleWrap').style.display = '';
+    document.getElementById('grantSinglePersonWrap').style.display = 'none';
+    renderGrantPicker();
+  }
+  document.getElementById('grantModal').classList.add('active');
+}
+function closeGrantModal() { document.getElementById('grantModal').classList.remove('active'); editingGrantId = null; }
+function renderGrantPicker(searchTerm = '') {
+  const container = document.getElementById('grantPeoplePicker');
+  const filtered = state.people
+    .filter(p => !searchTerm || p.name.toLowerCase().includes(searchTerm.toLowerCase()) || p.id.includes(searchTerm))
+    .sort((a, b) => a.name.localeCompare(b.name, 'he'));
+  container.innerHTML = filtered.map(p => `
+    <label class="person-checkbox">
+      <input type="checkbox" data-id="${p.id}" ${grantPickerSelection.has(p.id) ? 'checked' : ''} onchange="toggleGrantPicker('${p.id}', this.checked)">
+      <span>${escapeHtml(p.name)} <span class="id-label">· ${p.id}</span></span>
+    </label>`).join('');
+  updateGrantPickerCount();
+}
+function updateGrantPickerCount() { document.getElementById('grantPickerCount').textContent = `${grantPickerSelection.size} נבחרו`; }
+function filterGrantPicker(term) { renderGrantPicker(term); }
+function toggleGrantPicker(id, checked) { if (checked) grantPickerSelection.add(id); else grantPickerSelection.delete(id); updateGrantPickerCount(); }
+function toggleAllGrantPicker(select) {
+  document.querySelectorAll('#grantPeoplePicker input[type="checkbox"]').forEach(cb => {
+    const id = cb.dataset.id;
+    if (select) grantPickerSelection.add(id); else grantPickerSelection.delete(id);
+    cb.checked = select;
+  });
+  updateGrantPickerCount();
+}
+function saveGrant() {
+  const typeId = document.getElementById('grantType').value;
+  const date = document.getElementById('grantDate').value;
+  const note = document.getElementById('grantNote').value.trim();
+  if (!typeId) { alert('יש לבחור סוג מענק'); return; }
+  if (!date) { alert('יש להזין תאריך הענקה'); return; }
+  if (editingGrantId) {
+    const g = state.grants.find(x => x.id === editingGrantId);
+    g.typeId = typeId; g.date = date; g.note = note;
+  } else {
+    if (grantPickerSelection.size === 0) { alert('יש לבחור לפחות מקבל מענק אחד'); return; }
+    let added = 0, skipped = 0;
+    grantPickerSelection.forEach(personId => {
+      const dup = state.grants.find(g => g.typeId === typeId && g.personId === personId && g.date === date);
+      if (dup) { skipped++; return; }
+      state.grants.push({ id: uuid(), typeId, personId, date, note });
+      added++;
+    });
+    if (skipped > 0) alert(`נוספו ${added} הענקות. ${skipped} דולגו (כבר קיימת הענקה זהה באותו תאריך לאותו אדם).`);
+  }
+  saveState(); closeGrantModal(); render();
+}
+function deleteGrant(id) {
+  const g = state.grants.find(x => x.id === id);
+  if (!g) return;
+  if (!confirm(`למחוק את הענקת "${getGrantTypeName(g.typeId)}" ל${getPersonName(g.personId)} מתאריך ${formatDate(g.date)}?`)) return;
+  state.grants = state.grants.filter(x => x.id !== id);
+  saveState(); render();
+}
+
+// ===== Grant Types Manager =====
+function openGrantTypesModal() { renderGrantTypesManager(); document.getElementById('grantTypesModal').classList.add('active'); }
+function closeGrantTypesModal() { document.getElementById('grantTypesModal').classList.remove('active'); }
+function renderGrantTypesManager() {
+  const list = document.getElementById('grantTypesManagerList');
+  if (state.grantTypes.length === 0) { list.innerHTML = '<div class="empty-state" style="padding:24px;">אין סוגי מענקים</div>'; return; }
+  list.innerHTML = state.grantTypes.map(t => {
+    const count = state.grants.filter(g => g.typeId === t.id).length;
+    return `
+      <div class="person-manager-row">
+        <div>
+          <strong style="font-size:20px;">${escapeHtml(t.name)}</strong>
+          ${count > 0 ? `<span style="color:var(--text-light); font-size:16px;"> · ${count} הענקות</span>` : ''}
+        </div>
+        <button class="btn-danger btn-sm" onclick="removeGrantType('${t.id}')">מחק</button>
+      </div>`;
+  }).join('');
+}
+function addGrantType() {
+  const name = document.getElementById('newGrantTypeName').value.trim();
+  if (!name) { alert('יש להזין שם סוג מענק'); return; }
+  if (state.grantTypes.find(t => t.name === name)) { alert('סוג מענק בשם זה כבר קיים'); return; }
+  state.grantTypes.push({ id: uuid(), name });
   saveState();
-  renderAll();
+  document.getElementById('newGrantTypeName').value = '';
+  renderGrantTypesManager(); render();
+}
+function removeGrantType(id) {
+  const t = state.grantTypes.find(x => x.id === id);
+  if (!t) return;
+  const count = state.grants.filter(g => g.typeId === id).length;
+  const msg = count > 0 ? `למחוק את סוג המענק "${t.name}"? יימחקו גם ${count} הענקות המשויכות אליו.` : `למחוק את סוג המענק "${t.name}"?`;
+  if (!confirm(msg)) return;
+  state.grantTypes = state.grantTypes.filter(x => x.id !== id);
+  state.grants = state.grants.filter(g => g.typeId !== id);
+  saveState();
+  renderGrantTypesManager(); render();
 }
 
 // ===== People Manager Modal =====
-function openPeopleModal() {
-  renderPeopleManager();
-  document.getElementById('peopleModal').classList.add('active');
-}
-
-function closePeopleModal() {
-  document.getElementById('peopleModal').classList.remove('active');
-}
-
+function openPeopleModal() { renderPeopleManager(); document.getElementById('peopleModal').classList.add('active'); }
+function closePeopleModal() { document.getElementById('peopleModal').classList.remove('active'); }
 function renderPeopleManager() {
   const sorted = [...state.people].sort((a, b) => a.name.localeCompare(b.name, 'he'));
   document.getElementById('peopleManagerList').innerHTML = sorted.map(p => {
-    const inActivities = state.activities.filter(a => a.participants.includes(p.id)).length;
+    const inActivities = state.activities.filter(a => (a.participants || []).includes(p.id)).length;
+    const inGrants = state.grants.filter(g => g.personId === p.id).length;
+    const extra = [];
+    if (inActivities > 0) extra.push(`${inActivities} פעילויות`);
+    if (inGrants > 0) extra.push(`${inGrants} מענקים`);
     return `
       <div class="person-manager-row">
         <div>
           <strong style="font-size:20px;">${escapeHtml(p.name)}</strong>
           <span style="color:var(--text-muted); font-size:17px;"> · ${p.id}</span>
-          ${inActivities > 0 ? `<span style="color:var(--text-light); font-size:16px;"> · ${inActivities} פעילויות</span>` : ''}
+          ${extra.length ? `<span style="color:var(--text-light); font-size:16px;"> · ${extra.join(' · ')}</span>` : ''}
         </div>
         <button class="btn-danger btn-sm" onclick="removePerson('${p.id}')">הסר</button>
-      </div>
-    `;
+      </div>`;
   }).join('');
 }
-
 function addPerson() {
   const name = document.getElementById('newPersonName').value.trim();
   const id = document.getElementById('newPersonId').value.trim();
@@ -1309,36 +1320,23 @@ function addPerson() {
   saveState();
   document.getElementById('newPersonName').value = '';
   document.getElementById('newPersonId').value = '';
-  renderPeopleManager();
-  renderAll();
+  renderPeopleManager(); render();
 }
-
 function removePerson(id) {
   const p = state.people.find(x => x.id === id);
   if (!p) return;
-  const inActivities = state.activities.filter(a => a.participants.includes(id)).length;
-  const msg = inActivities > 0
-    ? `להסיר את ${p.name}? הוא רשום ב-${inActivities} פעילויות ויוסר גם מהן.`
-    : `להסיר את ${p.name}?`;
+  const inActivities = state.activities.filter(a => (a.participants || []).includes(id)).length;
+  const inGrants = state.grants.filter(g => g.personId === id).length;
+  const parts = [];
+  if (inActivities > 0) parts.push(`${inActivities} פעילויות`);
+  if (inGrants > 0) parts.push(`${inGrants} מענקים`);
+  const msg = parts.length > 0 ? `להסיר את ${p.name}? הוא רשום ב-${parts.join(' וב-')} ויוסר גם מהם.` : `להסיר את ${p.name}?`;
   if (!confirm(msg)) return;
   state.people = state.people.filter(x => x.id !== id);
-  state.activities.forEach(a => { a.participants = a.participants.filter(x => x !== id); });
+  state.activities.forEach(a => { a.participants = (a.participants || []).filter(x => x !== id); });
+  state.grants = state.grants.filter(g => g.personId !== id);
   saveState();
-  renderPeopleManager();
-  renderAll();
-}
-
-// ===== Export Helpers =====
-function getPeriodLabel() {
-  const f = getCurrentFilter();
-  if (f.period === 'all') return 'כל הזמנים';
-  if (f.period === 'year') return `שנת ${f.year}`;
-  if (f.period === 'month') return `${MONTH_NAMES[f.month]} ${f.year}`;
-  if (f.period === 'activity') {
-    const a = state.activities.find(x => x.id === f.activityId);
-    return a ? `פעילות: ${a.name}` : 'פעילות';
-  }
-  return '';
+  renderPeopleManager(); render();
 }
 
 // ===== JSON Backup =====
@@ -1346,13 +1344,80 @@ function exportJSON() {
   const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
-  a.href = url;
-  a.download = `miluim_backup_${new Date().toISOString().slice(0, 10)}.json`;
-  a.click();
+  a.href = url; a.download = `miluim_backup_${todayStr()}.json`; a.click();
   URL.revokeObjectURL(url);
 }
 
-// ===== Excel Export =====
+// ===== Shared import validation/migration =====
+function normalizeImported(imported) {
+  if (!imported || !Array.isArray(imported.people) || !Array.isArray(imported.activities)) {
+    throw new Error('פורמט לא תקין - חסרים שדות people או activities');
+  }
+  if (!Array.isArray(imported.grantTypes)) imported.grantTypes = BUILTIN_GRANT_TYPES.map(t => ({ ...t }));
+  if (!Array.isArray(imported.grants)) imported.grants = [];
+  return imported;
+}
+function importData(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const clean = normalizeImported(JSON.parse(e.target.result));
+      if (!confirm(`לייבא ${clean.people.length} אנשים, ${clean.activities.length} פעילויות ו-${clean.grants.length} מענקים? הנתונים הקיימים יוחלפו.`)) return;
+      state = clean; saveState(); render();
+      alert('הנתונים יובאו בהצלחה');
+    } catch(err) { alert('שגיאה בייבוא: ' + err.message); }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
+}
+
+// ===== Text Import/Export =====
+function openTextModal() { document.getElementById('textData').value = JSON.stringify(state, null, 2); document.getElementById('textModal').classList.add('active'); }
+function closeTextModal() { document.getElementById('textModal').classList.remove('active'); }
+function copyTextData() {
+  const ta = document.getElementById('textData');
+  ta.select();
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(ta.value).then(
+      () => alert('הטקסט הועתק ללוח'),
+      () => { try { document.execCommand('copy'); alert('הטקסט הועתק'); } catch(e) { alert('העתקה נכשלה - סמן והעתק ידנית'); } }
+    );
+  } else {
+    try { document.execCommand('copy'); alert('הטקסט הועתק'); } catch(e) { alert('העתקה נכשלה - סמן והעתק ידנית'); }
+  }
+}
+function downloadTextData() {
+  const blob = new Blob([document.getElementById('textData').value], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `miluim_data_${todayStr()}.txt`; a.click();
+  URL.revokeObjectURL(url);
+}
+function loadTextFile(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => { document.getElementById('textData').value = e.target.result; };
+  reader.readAsText(file);
+  event.target.value = '';
+}
+function importFromText() {
+  const text = document.getElementById('textData').value.trim();
+  if (!text) { alert('אין טקסט לייבוא'); return; }
+  let imported;
+  try { imported = JSON.parse(text); }
+  catch(e) { alert('הטקסט אינו בפורמט תקין (JSON). שגיאה: ' + e.message); return; }
+  try {
+    const clean = normalizeImported(imported);
+    if (!confirm(`לייבא ${clean.people.length} אנשים, ${clean.activities.length} פעילויות ו-${clean.grants.length} מענקים? הנתונים הקיימים יוחלפו.`)) return;
+    state = clean; saveState(); closeTextModal(); render();
+    alert('הנתונים יובאו בהצלחה');
+  } catch(err) { alert('שגיאה בייבוא: ' + err.message); }
+}
+
+// ===== Excel Export (all-time) =====
 function loadSheetJS() {
   return new Promise((resolve, reject) => {
     if (typeof XLSX !== 'undefined') return resolve();
@@ -1363,143 +1428,116 @@ function loadSheetJS() {
     document.head.appendChild(script);
   });
 }
-
 async function exportToExcel() {
   try {
     await loadSheetJS();
-    
-    const periodLabel = getPeriodLabel();
-    const filteredActivities = getFilteredActivities();
-    
-    const allStats = state.people.map(p => ({
-      person: p,
-      stats: getPersonStats(p.id)
-    }));
+    const scope = { type: 'all' };
+    const acts = state.activities;
+    const allStats = state.people.map(p => ({ person: p, stats: personStatsInScope(p.id, scope), grants: state.grants.filter(g => g.personId === p.id) }));
     const grandTotalDays = allStats.reduce((s, p) => s + p.stats.totalDays, 0);
     const activePeopleCount = allStats.filter(s => s.stats.totalDays > 0).length;
-    
-    // Sheet 1: People Summary (ranked)
+
     const peopleSummary = [...allStats]
       .sort((a, b) => b.stats.totalDays - a.stats.totalDays || a.person.name.localeCompare(b.person.name, 'he'))
-      .map(({person, stats}, idx) => ({
+      .map(({ person, stats, grants }, idx) => ({
         'דירוג': stats.totalDays > 0 ? idx + 1 : '',
         'שם מלא': person.name,
         'מ.א.': person.id,
         'סך ימים': stats.totalDays,
         'מס׳ זימונים': stats.activities.length,
+        'מס׳ מענקים': grants.length,
         'אחוז מהסך': grandTotalDays > 0 ? +((stats.totalDays / grandTotalDays) * 100).toFixed(2) : 0,
-        'פעילויות': stats.activities.map(a => `${a.name} (${getDaysForActivityInFilter(a)}י׳)`).join(' | ')
+        'פעילויות': stats.activities.map(a => `${a.name} (${daysBetween(a.startDate, a.endDate)}י׳)`).join(' | '),
+        'מענקים': grants.map(g => `${getGrantTypeName(g.typeId)} (${formatDate(g.date)})`).join(' | ')
       }));
-    
-    // Sheet 2: Activities
-    const activitiesData = [...filteredActivities]
-      .sort((a, b) => new Date(b.startDate) - new Date(a.startDate))
-      .map(a => {
-        const participants = a.participants
-          .map(pid => state.people.find(p => p.id === pid))
-          .filter(p => p)
-          .map(p => p.name);
-        return {
-          'שם הפעילות': a.name,
-          'מתאריך': formatDate(a.startDate),
-          'עד תאריך': formatDate(a.endDate),
-          'משך מקורי (ימים)': daysBetween(a.startDate, a.endDate),
-          'ימים בתקופה': getDaysForActivityInFilter(a),
-          'מס׳ משתתפים': a.participants.length,
-          'משתתפים': participants.join(', ')
-        };
-      });
-    
-    // Sheet 3: Detailed (person × activity)
-    const detailed = [];
-    [...allStats]
-      .sort((a, b) => a.person.name.localeCompare(b.person.name, 'he'))
-      .forEach(({person, stats}) => {
-        if (stats.activities.length === 0) {
-          detailed.push({
-            'שם': person.name,
-            'מ.א.': person.id,
-            'פעילות': '(אין זימונים בתקופה)',
-            'מתאריך': '',
-            'עד תאריך': '',
-            'ימים': 0
-          });
-        } else {
-          stats.activities
-            .sort((a, b) => new Date(a.startDate) - new Date(b.startDate))
-            .forEach(a => {
-              detailed.push({
-                'שם': person.name,
-                'מ.א.': person.id,
-                'פעילות': a.name,
-                'מתאריך': formatDate(a.startDate),
-                'עד תאריך': formatDate(a.endDate),
-                'ימים': getDaysForActivityInFilter(a)
-              });
-            });
-        }
-      });
-    
-    // Sheet 4: Metadata
+
+    const activitiesData = [...acts].sort((a, b) => new Date(b.startDate) - new Date(a.startDate)).map(a => {
+      const participants = (a.participants || []).map(pid => getPersonName(pid)).join(', ');
+      return {
+        'שם הפעילות': a.name,
+        'מתאריך': formatDate(a.startDate),
+        'עד תאריך (שחרור)': formatDate(a.endDate),
+        'משך (ימים)': daysBetween(a.startDate, a.endDate),
+        'מס׳ משתתפים': (a.participants || []).length,
+        'משתתפים': participants
+      };
+    });
+
+    // Discharge schedule (by date)
+    const discharge = getDischargeEvents()
+      .sort((a, b) => a.dischargeDate.localeCompare(b.dischargeDate) || a.personName.localeCompare(b.personName, 'he'))
+      .map(e => ({
+        'יום שחרור': formatDate(e.dischargeDate),
+        'חודש': MONTH_NAMES[new Date(e.dischargeDate + 'T00:00:00').getMonth()] + ' ' + new Date(e.dischargeDate + 'T00:00:00').getFullYear(),
+        'שם': e.personName,
+        'מ.א.': e.personId,
+        'פעילות': e.activityName,
+        'ימים': e.days
+      }));
+
+    const grantsData = [...state.grants].sort((a, b) => {
+      const tn = getGrantTypeName(a.typeId).localeCompare(getGrantTypeName(b.typeId), 'he');
+      if (tn !== 0) return tn;
+      return new Date(b.date) - new Date(a.date);
+    }).map(g => ({ 'סוג מענק': getGrantTypeName(g.typeId), 'שם': getPersonName(g.personId), 'מ.א.': g.personId, 'תאריך': formatDate(g.date), 'הערה': g.note || '' }));
+
     const meta = [
       { 'מאפיין': 'תאריך הפקת הדוח', 'ערך': new Date().toLocaleString('he-IL') },
-      { 'מאפיין': 'תקופה', 'ערך': periodLabel },
+      { 'מאפיין': 'תקופה', 'ערך': 'כל הזמנים' },
       { 'מאפיין': 'סך אנשים ברשימה', 'ערך': state.people.length },
-      { 'מאפיין': 'אנשים פעילים בתקופה', 'ערך': activePeopleCount },
-      { 'מאפיין': 'סך פעילויות בתקופה', 'ערך': filteredActivities.length },
-      { 'מאפיין': 'סך ימי-אדם בתקופה', 'ערך': grandTotalDays },
-      { 'מאפיין': 'ממוצע ימים לאיש פעיל', 'ערך': activePeopleCount > 0 ? +(grandTotalDays / activePeopleCount).toFixed(2) : 0 }
+      { 'מאפיין': 'אנשים פעילים', 'ערך': activePeopleCount },
+      { 'מאפיין': 'סך פעילויות', 'ערך': acts.length },
+      { 'מאפיין': 'סך ימי-אדם', 'ערך': grandTotalDays },
+      { 'מאפיין': 'ממוצע ימים לאיש פעיל', 'ערך': activePeopleCount > 0 ? +(grandTotalDays / activePeopleCount).toFixed(2) : 0 },
+      { 'מאפיין': 'סך מענקים', 'ערך': state.grants.length }
     ];
-    
+
     const wb = XLSX.utils.book_new();
     wb.Workbook = { Views: [{ RTL: true }] };
-    
-    const ws1 = XLSX.utils.json_to_sheet(peopleSummary);
-    ws1['!cols'] = [{wch:8},{wch:25},{wch:12},{wch:10},{wch:14},{wch:12},{wch:60}];
-    XLSX.utils.book_append_sheet(wb, ws1, 'סיכום אנשים');
-    
-    const ws2 = XLSX.utils.json_to_sheet(activitiesData);
-    ws2['!cols'] = [{wch:30},{wch:14},{wch:14},{wch:18},{wch:16},{wch:14},{wch:80}];
-    XLSX.utils.book_append_sheet(wb, ws2, 'פעילויות');
-    
-    const ws3 = XLSX.utils.json_to_sheet(detailed);
-    ws3['!cols'] = [{wch:25},{wch:12},{wch:30},{wch:14},{wch:14},{wch:10}];
-    XLSX.utils.book_append_sheet(wb, ws3, 'פירוט מלא');
-    
-    const ws4 = XLSX.utils.json_to_sheet(meta);
-    ws4['!cols'] = [{wch:25},{wch:35}];
-    XLSX.utils.book_append_sheet(wb, ws4, 'מידע');
-    
-    const safeLabel = periodLabel.replace(/[\\\/:"*?<>|]/g, '_');
-    XLSX.writeFile(wb, `דוח_מילואים_${safeLabel}_${new Date().toISOString().slice(0,10)}.xlsx`);
+    const add = (data, name, cols) => { const ws = XLSX.utils.json_to_sheet(data.length ? data : [{}]); if (cols) ws['!cols'] = cols; XLSX.utils.book_append_sheet(wb, ws, name); };
+    add(peopleSummary, 'סיכום אנשים', [{wch:8},{wch:25},{wch:12},{wch:10},{wch:14},{wch:12},{wch:12},{wch:55},{wch:45}]);
+    add(activitiesData, 'פעילויות', [{wch:30},{wch:14},{wch:16},{wch:12},{wch:14},{wch:80}]);
+    add(discharge, 'סגירת שמפ', [{wch:14},{wch:18},{wch:25},{wch:12},{wch:30},{wch:10}]);
+    add(grantsData, 'מענקים', [{wch:24},{wch:25},{wch:12},{wch:14},{wch:35}]);
+    add(meta, 'מידע', [{wch:25},{wch:35}]);
+
+    XLSX.writeFile(wb, `דוח_מילואים_${todayStr()}.xlsx`);
   } catch(e) {
     alert('שגיאה בייצוא לאקסל: ' + e.message);
     console.error(e);
   }
 }
 
-// ===== Printable Report =====
+// ===== Printable Report (all-time) =====
 function exportToReport() {
-  const periodLabel = getPeriodLabel();
-  const filteredActivities = getFilteredActivities();
-  
-  const allStats = state.people.map(p => ({ person: p, stats: getPersonStats(p.id) }));
-  const activeStats = allStats.filter(s => s.stats.totalDays > 0)
-    .sort((a, b) => b.stats.totalDays - a.stats.totalDays);
+  const scope = { type: 'all' };
+  const periodLabel = 'כל הזמנים';
+  const acts = state.activities;
+  const allStats = state.people.map(p => ({ person: p, stats: personStatsInScope(p.id, scope) }));
+  const activeStats = allStats.filter(s => s.stats.totalDays > 0).sort((a, b) => b.stats.totalDays - a.stats.totalDays);
   const grandTotalDays = activeStats.reduce((s, p) => s + p.stats.totalDays, 0);
   const activePeopleCount = activeStats.length;
   const maxDays = activeStats[0]?.stats.totalDays || 1;
-  
-  const fullList = [...allStats].sort((a, b) => 
-    b.stats.totalDays - a.stats.totalDays || a.person.name.localeCompare(b.person.name, 'he')
-  );
-  
-  const sortedActs = [...filteredActivities].sort((a, b) => new Date(b.startDate) - new Date(a.startDate));
-  
+  const fullList = [...allStats].sort((a, b) => b.stats.totalDays - a.stats.totalDays || a.person.name.localeCompare(b.person.name, 'he'));
+  const sortedActs = [...acts].sort((a, b) => new Date(b.startDate) - new Date(a.startDate));
+
+  // discharge by month
+  const events = getDischargeEvents();
+  const byMonth = {};
+  events.forEach(e => {
+    const dt = new Date(e.dischargeDate + 'T00:00:00');
+    const key = `${dt.getFullYear()}-${String(dt.getMonth()).padStart(2,'0')}`;
+    (byMonth[key] = byMonth[key] || []).push(e);
+  });
+  const monthKeys = Object.keys(byMonth).sort();
+  const sortedGrants = [...state.grants].sort((a, b) => {
+    const tn = getGrantTypeName(a.typeId).localeCompare(getGrantTypeName(b.typeId), 'he');
+    if (tn !== 0) return tn;
+    return new Date(b.date) - new Date(a.date);
+  });
+
   const reportHTML = `<!DOCTYPE html>
-<html lang="he" dir="rtl">
-<head>
-<meta charset="UTF-8">
+<html lang="he" dir="rtl"><head><meta charset="UTF-8">
 <title>דוח מילואים - ${escapeHtml(periodLabel)}</title>
 <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;500;600;700&family=Frank+Ruhl+Libre:wght@500;700&display=swap" rel="stylesheet">
 <style>
@@ -1507,247 +1545,108 @@ function exportToReport() {
   body { font-family: 'Assistant', sans-serif; padding: 24px 32px 32px; color: #1a202c; font-size: 14px; line-height: 1.5; background: white; }
   h1 { font-family: 'Frank Ruhl Libre', serif; font-size: 30px; color: #1a2942; margin-bottom: 4px; letter-spacing: -0.5px; }
   h2 { font-family: 'Frank Ruhl Libre', serif; font-size: 22px; color: #1a2942; margin: 28px 0 12px; border-bottom: 2.5px solid #b8975a; padding-bottom: 8px; }
+  h3 { font-size: 16px; color: #1a2942; margin: 14px 0 6px; }
   .subtitle { font-size: 18px; color: #5a6478; margin-bottom: 4px; font-weight: 500; }
   .meta { font-size: 13px; color: #8a92a3; margin-bottom: 20px; }
-  
   .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 14px 0 20px; }
   .stat { background: #f7f4ed; padding: 12px 16px; border-radius: 8px; border-right: 4px solid #b8975a; }
   .stat-label { font-size: 12px; color: #5a6478; margin-bottom: 4px; font-weight: 500; }
   .stat-value { font-family: 'Frank Ruhl Libre', serif; font-size: 22px; color: #1a2942; font-weight: 700; line-height: 1; }
   .stat-unit { font-family: 'Assistant', sans-serif; font-size: 13px; color: #8a92a3; font-weight: 400; margin-right: 3px; }
-  
-  table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 13px; }
+  table { width: 100%; border-collapse: collapse; margin: 8px 0 14px; font-size: 13px; }
   th, td { padding: 7px 10px; text-align: right; border-bottom: 1px solid #e5dfd2; }
   th { background: #1a2942; color: white; font-weight: 600; }
   tr:nth-child(even) td { background: #faf8f2; }
-  
   .rank-1 td { background: #fdf4d4 !important; font-weight: 600; }
   .rank-2 td { background: #f0f2f5 !important; font-weight: 600; }
   .rank-3 td { background: #fbe9d8 !important; font-weight: 600; }
-  
   .rank-cell { width: 50px; text-align: center; font-weight: 700; font-size: 14px; }
   .num-cell { text-align: center; font-feature-settings: "tnum"; }
-  
   .bar-wrap { width: 140px; height: 10px; background: #f0ebe0; border-radius: 3px; overflow: hidden; display: inline-block; vertical-align: middle; }
   .bar { height: 100%; background: linear-gradient(to left, #b8975a, #d4b87a); }
   .rank-1 .bar { background: linear-gradient(to left, #d4af37, #f0d870); }
   .rank-2 .bar { background: linear-gradient(to left, #c0c4cc, #d8dce4); }
   .rank-3 .bar { background: linear-gradient(to left, #cd7f32, #e09850); }
-  
-  .actions {
-    position: fixed; top: 16px; left: 16px;
-    display: flex; gap: 8px; z-index: 100;
-    background: white; padding: 8px; border-radius: 10px;
-    box-shadow: 0 4px 14px rgba(0,0,0,0.15);
-  }
-  .actions button {
-    padding: 10px 20px; font-size: 15px; font-weight: 600;
-    border: none; border-radius: 6px; cursor: pointer;
-    font-family: 'Assistant', sans-serif;
-  }
-  .btn-print { background: #1a2942; color: white; }
-  .btn-print:hover { background: #2a3f5f; }
-  .btn-close { background: #e8e3d8; color: #1a2942; }
-  
+  .actions { position: fixed; top: 16px; left: 16px; display: flex; gap: 8px; z-index: 100; background: white; padding: 8px; border-radius: 10px; box-shadow: 0 4px 14px rgba(0,0,0,0.15); }
+  .actions button { padding: 10px 20px; font-size: 15px; font-weight: 600; border: none; border-radius: 6px; cursor: pointer; font-family: 'Assistant', sans-serif; }
+  .btn-print { background: #1a2942; color: white; } .btn-close { background: #e8e3d8; color: #1a2942; }
   .footer { margin-top: 32px; padding-top: 16px; border-top: 1px solid #e5dfd2; font-size: 12px; color: #8a92a3; text-align: center; }
-  
-  @media print {
-    .actions { display: none; }
-    body { padding: 14px 18px; font-size: 11px; }
-    h1 { font-size: 24px; }
-    h2 { font-size: 18px; margin: 20px 0 10px; page-break-after: avoid; }
-    .stat-value { font-size: 18px; }
-    table { font-size: 11px; page-break-inside: auto; }
-    th, td { padding: 5px 8px; }
-    tr { page-break-inside: avoid; }
-    thead { display: table-header-group; }
-    .stats { page-break-inside: avoid; }
-  }
-  
+  @media print { .actions { display: none; } body { padding: 14px 18px; font-size: 11px; } h1 { font-size: 24px; } h2 { font-size: 18px; margin: 18px 0 8px; page-break-after: avoid; } .stat-value { font-size: 18px; } table { font-size: 11px; } th, td { padding: 5px 8px; } tr { page-break-inside: avoid; } thead { display: table-header-group; } .stats { page-break-inside: avoid; } }
   @page { margin: 1.4cm 1cm; size: A4; }
-</style>
-</head>
-<body>
+</style></head><body>
   <div class="actions">
     <button class="btn-print" onclick="window.print()">🖨️ הדפס / שמור כ-PDF</button>
     <button class="btn-close" onclick="window.close()">סגור</button>
   </div>
-  
   <h1>🎖️ דוח מעקב ימי מילואים</h1>
   <div class="subtitle">${escapeHtml(periodLabel)}</div>
   <div class="meta">הופק בתאריך ${new Date().toLocaleString('he-IL')}</div>
-  
   <div class="stats">
-    <div class="stat">
-      <div class="stat-label">אנשים פעילים</div>
-      <div class="stat-value">${activePeopleCount}<span class="stat-unit">/ ${state.people.length}</span></div>
-    </div>
-    <div class="stat">
-      <div class="stat-label">סך פעילויות</div>
-      <div class="stat-value">${filteredActivities.length}</div>
-    </div>
-    <div class="stat">
-      <div class="stat-label">סך ימי-אדם</div>
-      <div class="stat-value">${grandTotalDays}<span class="stat-unit">ימים</span></div>
-    </div>
-    <div class="stat">
-      <div class="stat-label">ממוצע לאיש פעיל</div>
-      <div class="stat-value">${activePeopleCount > 0 ? (grandTotalDays / activePeopleCount).toFixed(1) : 0}<span class="stat-unit">ימים</span></div>
-    </div>
+    <div class="stat"><div class="stat-label">אנשים פעילים</div><div class="stat-value">${activePeopleCount}<span class="stat-unit">/ ${state.people.length}</span></div></div>
+    <div class="stat"><div class="stat-label">סך פעילויות</div><div class="stat-value">${acts.length}</div></div>
+    <div class="stat"><div class="stat-label">סך ימי-אדם</div><div class="stat-value">${grandTotalDays}<span class="stat-unit">ימים</span></div></div>
+    <div class="stat"><div class="stat-label">סך מענקים</div><div class="stat-value">${state.grants.length}</div></div>
   </div>
-  
   ${activeStats.length > 0 ? `
   <h2>🏆 בולטים - ${Math.min(15, activeStats.length)} הראשונים</h2>
-  <table>
-    <thead>
-      <tr>
-        <th class="rank-cell">דירוג</th>
-        <th>שם</th>
-        <th>מ.א.</th>
-        <th class="num-cell">סך ימים</th>
-        <th class="num-cell">זימונים</th>
-        <th class="num-cell">אחוז</th>
-        <th>השוואה ויזואלית</th>
-      </tr>
-    </thead>
-    <tbody>
-      ${activeStats.slice(0, 15).map((s, i) => {
-        const pct = grandTotalDays > 0 ? (s.stats.totalDays / grandTotalDays) * 100 : 0;
-        const barW = (s.stats.totalDays / maxDays) * 140;
-        const rankClass = i < 3 ? `rank-${i+1}` : '';
-        const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : '';
-        return `
-          <tr class="${rankClass}">
-            <td class="rank-cell">${medal} ${i+1}</td>
-            <td><strong>${escapeHtml(s.person.name)}</strong></td>
-            <td>${s.person.id}</td>
-            <td class="num-cell"><strong>${s.stats.totalDays}</strong></td>
-            <td class="num-cell">${s.stats.activities.length}</td>
-            <td class="num-cell">${pct.toFixed(1)}%</td>
-            <td><div class="bar-wrap"><div class="bar" style="width:${barW}px"></div></div></td>
-          </tr>
-        `;
-      }).join('')}
-    </tbody>
-  </table>
-  ` : ''}
-  
+  <table><thead><tr><th class="rank-cell">דירוג</th><th>שם</th><th>מ.א.</th><th class="num-cell">סך ימים</th><th class="num-cell">זימונים</th><th class="num-cell">אחוז</th><th>השוואה</th></tr></thead><tbody>
+  ${activeStats.slice(0, 15).map((s, i) => {
+    const pct = grandTotalDays > 0 ? (s.stats.totalDays / grandTotalDays) * 100 : 0;
+    const barW = (s.stats.totalDays / maxDays) * 140;
+    const rankClass = i < 3 ? `rank-${i+1}` : '';
+    const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : '';
+    return `<tr class="${rankClass}"><td class="rank-cell">${medal} ${i+1}</td><td><strong>${escapeHtml(s.person.name)}</strong></td><td>${s.person.id}</td><td class="num-cell"><strong>${s.stats.totalDays}</strong></td><td class="num-cell">${s.stats.activities.length}</td><td class="num-cell">${pct.toFixed(1)}%</td><td><div class="bar-wrap"><div class="bar" style="width:${barW}px"></div></div></td></tr>`;
+  }).join('')}
+  </tbody></table>` : ''}
   <h2>👥 רשימה מלאה - ${state.people.length} אנשים</h2>
-  <table>
-    <thead>
-      <tr>
-        <th class="num-cell">#</th>
-        <th>שם</th>
-        <th>מ.א.</th>
-        <th class="num-cell">סך ימים</th>
-        <th class="num-cell">זימונים</th>
-        <th class="num-cell">אחוז מהסך</th>
-      </tr>
-    </thead>
-    <tbody>
-      ${fullList.map((s, i) => {
-        const pct = grandTotalDays > 0 ? (s.stats.totalDays / grandTotalDays) * 100 : 0;
-        return `
-          <tr>
-            <td class="num-cell">${i+1}</td>
-            <td>${escapeHtml(s.person.name)}</td>
-            <td>${s.person.id}</td>
-            <td class="num-cell">${s.stats.totalDays}</td>
-            <td class="num-cell">${s.stats.activities.length}</td>
-            <td class="num-cell">${pct.toFixed(1)}%</td>
-          </tr>
-        `;
-      }).join('')}
-    </tbody>
-  </table>
-  
+  <table><thead><tr><th class="num-cell">#</th><th>שם</th><th>מ.א.</th><th class="num-cell">סך ימים</th><th class="num-cell">זימונים</th><th class="num-cell">אחוז</th></tr></thead><tbody>
+  ${fullList.map((s, i) => {
+    const pct = grandTotalDays > 0 ? (s.stats.totalDays / grandTotalDays) * 100 : 0;
+    return `<tr><td class="num-cell">${i+1}</td><td>${escapeHtml(s.person.name)}</td><td>${s.person.id}</td><td class="num-cell">${s.stats.totalDays}</td><td class="num-cell">${s.stats.activities.length}</td><td class="num-cell">${pct.toFixed(1)}%</td></tr>`;
+  }).join('')}
+  </tbody></table>
   ${sortedActs.length > 0 ? `
-  <h2>📋 פעילויות בתקופה</h2>
-  <table>
-    <thead>
-      <tr>
-        <th>שם הפעילות</th>
-        <th>מתאריך</th>
-        <th>עד תאריך</th>
-        <th class="num-cell">ימים</th>
-        <th class="num-cell">משתתפים</th>
-      </tr>
-    </thead>
-    <tbody>
-      ${sortedActs.map(a => {
-        const days = getDaysForActivityInFilter(a);
-        return `
-          <tr>
-            <td><strong>${escapeHtml(a.name)}</strong></td>
-            <td>${formatDate(a.startDate)}</td>
-            <td>${formatDate(a.endDate)}</td>
-            <td class="num-cell">${days}</td>
-            <td class="num-cell">${a.participants.length}</td>
-          </tr>
-        `;
-      }).join('')}
-    </tbody>
-  </table>
-  ` : ''}
-  
-  <div class="footer">
-    דוח זה הופק אוטומטית · ${new Date().toLocaleDateString('he-IL')} · מעקב אחרי ימי מילואים
-  </div>
-</body>
-</html>`;
-  
+  <h2>📋 פעילויות / תקופות שמ"פ</h2>
+  <table><thead><tr><th>שם הפעילות</th><th>מתאריך</th><th>עד תאריך (שחרור)</th><th class="num-cell">ימים</th><th class="num-cell">משתתפים</th></tr></thead><tbody>
+  ${sortedActs.map(a => `<tr><td><strong>${escapeHtml(a.name)}</strong></td><td>${formatDate(a.startDate)}</td><td>${formatDate(a.endDate)}</td><td class="num-cell">${daysBetween(a.startDate, a.endDate)}</td><td class="num-cell">${(a.participants||[]).length}</td></tr>`).join('')}
+  </tbody></table>` : ''}
+  ${monthKeys.length > 0 ? `
+  <h2>🔚 סגירת שמ"פ לפי חודש - מי משתחרר ומתי</h2>
+  ${monthKeys.map(key => {
+    const [y, m] = key.split('-').map(Number);
+    const list = byMonth[key].sort((a, b) => a.dischargeDate.localeCompare(b.dischargeDate) || a.personName.localeCompare(b.personName, 'he'));
+    return `<h3>${MONTH_NAMES[m]} ${y} (${list.length} שחרורים)</h3>
+    <table><thead><tr><th>יום שחרור</th><th>שם</th><th>מ.א.</th><th>פעילות</th><th class="num-cell">ימים</th></tr></thead><tbody>
+    ${list.map(e => `<tr><td>${formatDate(e.dischargeDate)}</td><td>${escapeHtml(e.personName)}</td><td>${e.personId}</td><td>${escapeHtml(e.activityName)}</td><td class="num-cell">${e.days}</td></tr>`).join('')}
+    </tbody></table>`;
+  }).join('')}` : ''}
+  ${sortedGrants.length > 0 ? `
+  <h2>🎖️ מענקים</h2>
+  <table><thead><tr><th>סוג מענק</th><th>שם</th><th>מ.א.</th><th>תאריך</th><th>הערה</th></tr></thead><tbody>
+  ${sortedGrants.map(g => `<tr><td><strong>${escapeHtml(getGrantTypeName(g.typeId))}</strong></td><td>${escapeHtml(getPersonName(g.personId))}</td><td>${g.personId}</td><td>${formatDate(g.date)}</td><td>${escapeHtml(g.note || '')}</td></tr>`).join('')}
+  </tbody></table>` : ''}
+  <div class="footer">דוח זה הופק אוטומטית · ${new Date().toLocaleDateString('he-IL')} · מעקב אחרי ימי מילואים</div>
+</body></html>`;
+
   const win = window.open('', '_blank');
-  if (!win) {
-    alert('הדפדפן חסם פתיחת חלון חדש. אנא אפשר חלונות קופצים לאתר זה ונסה שוב.');
-    return;
-  }
-  win.document.open();
-  win.document.write(reportHTML);
-  win.document.close();
+  if (!win) { alert('הדפדפן חסם פתיחת חלון חדש. אפשר חלונות קופצים לאתר ונסה שוב.'); return; }
+  win.document.open(); win.document.write(reportHTML); win.document.close();
 }
 
-function importData(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = e => {
-    try {
-      const imported = JSON.parse(e.target.result);
-      if (!Array.isArray(imported.people) || !Array.isArray(imported.activities)) throw new Error('פורמט קובץ לא תקין');
-      if (!confirm(`לייבא ${imported.people.length} אנשים ו-${imported.activities.length} פעילויות? הנתונים הקיימים יוחלפו.`)) return;
-      state = imported;
-      saveState();
-      renderAll();
-      alert('הנתונים יובאו בהצלחה');
-    } catch(err) {
-      alert('שגיאה בייבוא: ' + err.message);
-    }
-  };
-  reader.readAsText(file);
-  event.target.value = '';
+// Close modals on overlay click + Escape
+function closeAllModals() {
+  document.querySelectorAll('.modal-overlay.active').forEach(o => o.classList.remove('active'));
+  editingActivityId = null;
+  editingGrantId = null;
 }
-
-// Close modals on overlay click
 document.querySelectorAll('.modal-overlay').forEach(overlay => {
-  overlay.addEventListener('click', e => {
-    if (e.target === overlay) {
-      overlay.classList.remove('active');
-      editingActivityId = null;
-    }
-  });
+  overlay.addEventListener('click', e => { if (e.target === overlay) closeAllModals(); });
 });
-
-// Keyboard shortcuts
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') {
-    document.querySelectorAll('.modal-overlay.active').forEach(o => o.classList.remove('active'));
-    editingActivityId = null;
-  }
-});
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAllModals(); });
 
 // ===== Init =====
 loadState();
-renderAll();
+render();
 </script>
 </body>
 </html>
